@@ -1,32 +1,25 @@
-import { LinkedList } from './linkedList.ts'
+import { LinkedList } from "./linkedList.ts";
 
-/**
- * The Stack class implements a stack structure using LinkedList.
- * The Stack class provides stack methods that are formed using the LinkedList's methods.
- */
 class Stack<T> {
-    private __items: LinkedList<T> | null;
+  #__items: LinkedList<T>;
+  constructor(__items: LinkedList<T> = new LinkedList<T>()) {
+    this.#__items = __items;
+  }
 
-    constructor(__items: LinkedList<T> = new LinkedList<T>()) {
-        this.__items = __items;
-    }
+  push(item: T): T {
+    this.#__items.addAtHead(item);
+    return item;
+  }
 
-    getItems(): LinkedList<T> {
-        return this.__items!;
-    }
+  pop(): T | null {
+    const popedItem = this.#__items.removeFromHead();
+    return popedItem;
+  }
 
-    push(item: T) {
-        this.__items?.addAtEnd(item);
-    };
-
-    pop() {
-        return this.__items?.removeFromEnd();
-    };
-
-    top(): T | "Stack is empty" {
-        const tail = this.__items?.getTail();
-        return tail ? tail.data : "Stack is empty";
-    };
+  top(): T | null {
+    const item = this.#__items.valueAtHead() ?? null;
+    return item;
+  }
 }
 
-export { Stack };
+export {Stack}

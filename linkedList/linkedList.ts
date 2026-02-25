@@ -18,8 +18,8 @@ class ListNode<T> {
  * The LinkedListInterface interface provides a structure for the LinkedList class generator.
  */
 interface LinkedListInterface<T> {
-    getHead(): ListNode<T> | null;
-    getTail(): ListNode<T> | null;
+    valueAtHead(): T | null;
+    valueAtTail(): T | null;
     addAtEnd(t: T): void;
     removeFromEnd(): T | null;
     addAtHead(t: T): void;
@@ -34,53 +34,47 @@ interface LinkedListInterface<T> {
  * Optionally contains a head and tail.
  */
 class LinkedList<T> implements LinkedListInterface<T> {
-    private head: ListNode<T> | null = null;
-    private tail: ListNode<T> | null = null;
+    #head: ListNode<T> | null = null;
+    #tail: ListNode<T> | null = null;
 
-    getHead(): ListNode<T> | null {
-        return this.head ?? null;
+    valueAtHead(): T | null {
+        return this.#head ? this.#head.data : null;
     }
 
-    getTail(): ListNode<T> | null {
-        return this.tail ?? null;
+    valueAtTail(): T | null {
+        return this.#tail ? this.#tail.data : null;
     }
 
-    constructor(head: ListNode<T> | null = null, tail: ListNode<T> | null = null) {
-        this.head = head;
-        this.tail = tail;
+    constructor() {
+        this.#head = this.#head;
+        this.#tail = this.#tail;
     }
 
     // method to add at the end of the list
     addAtEnd(t:T) {
         let temp = new ListNode(t, null);
 
-        if(this.head === null) {
-            this.head = temp; this.head.next = null;
-            this.tail = temp; this.tail.next = null;
-        } else if(this.tail) {
-            this.tail.next = temp;
-            this.tail = temp;
-        } else {
-            let temp1 = this.head;
-            while(temp1?.next != null) {
-                temp1 = temp1.next;
-            }
-            this.tail = temp;
+        if(this.#head === null) {
+            this.#head = temp; this.#head.next = null;
+            this.#tail = temp; this.#tail.next = null;
+        } else if(this.#tail) {
+            this.#tail.next = temp;
+            this.#tail = temp;
         }
     };
 
     // method to remove from end of the list
     removeFromEnd() {
-        if(this.head === null) return null;
+        if(this.#head === null) return null;
 
-        if(this.head?.next === null) {
-            const val = this.head.data;
-            this.head = null;
-            this.tail = null;
+        if(this.#head?.next === null) {
+            const val = this.#head.data;
+            this.#head = null;
+            this.#tail = null;
             return val;
         }
 
-        let temp = this.head;
+        let temp = this.#head;
 
         while(temp!.next && temp!.next.next !== null) {
             temp = temp!.next;
@@ -88,7 +82,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
 
         const temp1 = temp!.next;
         temp!.next = null;
-        this.tail = temp;
+        this.#tail = temp;
 
         return temp1!.data;
     };
@@ -97,25 +91,25 @@ class LinkedList<T> implements LinkedListInterface<T> {
     addAtHead(t: T) {
         let temp = new ListNode(t, null);
 
-        if(this.head !== null) {
-            temp.next = this.head!;
-            this.head = temp;
+        if(this.#head !== null) {
+            temp.next = this.#head!;
+            this.#head = temp;
         } else {
-            this.head = temp;
-            this.tail = temp;
+            this.#head = temp;
+            this.#tail = temp;
         }
     };
     
     // method to remove from the start of the list
     removeFromHead() {
-        if(this.head === null) { return null }
+        if(this.#head === null) { return null }
 
-        const temp = this.head;
-        this.head = this.head!.next;
+        const temp = this.#head;
+        this.#head = this.#head!.next;
 
         let val = temp!.data;
         
-        if(this.head === null) { this.tail = null }
+        if(this.#head === null) { this.#tail = null }
 
         return val;
     };
@@ -123,7 +117,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
     // method to return the index for an node given value
     searchFor(t: T) {
         let index = 0;
-        let temp = this.head;
+        let temp = this.#head;
 
         while (temp !== null) {
             if (temp!.data === t) {
@@ -139,9 +133,9 @@ class LinkedList<T> implements LinkedListInterface<T> {
     // method to get the length of the list
     length() {
         let len = 0;
-        let temp = this.head;
+        let temp = this.#head;
 
-        if(this.head === null) {
+        if(this.#head === null) {
             return 0;
         }
 
@@ -156,7 +150,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
     valueAtIndex(index: number) {
         if(index >= this.length() || index < 0) return "Index out of bound";
 
-        let checkIndex = 0, temp = this.head;
+        let checkIndex = 0, temp = this.#head;
         while(checkIndex !== index) {
             checkIndex += 1;
             temp = temp!.next;
