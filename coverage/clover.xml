@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1772019373284" clover="3.2.0">
-  <project timestamp="1772019373284" name="All files">
+<coverage generated="1772020339626" clover="3.2.0">
+  <project timestamp="1772020339627" name="All files">
     <metrics statements="69" coveredstatements="69" conditionals="31" coveredconditionals="30" methods="15" coveredmethods="15" elements="115" coveredelements="114" complexity="0" loc="69" ncloc="69" packages="1" files="2" classes="2"/>
-    <file name="linkedList.ts" path="/mnt/c/Users/Deric/Desktop/cc-7-deric/cc-7-deric/linkedList/linkedList.ts">
+    <file name="linkedList.ts" path="/mnt/c/Users/Deric/Desktop/cc-7-deric/cc-7-deric/LinkedList and Stack/linkedList.ts">
       <metrics statements="62" coveredstatements="62" conditionals="28" coveredconditionals="27" methods="11" coveredmethods="11"/>
       <line num="12" count="85" type="stmt"/>
       <line num="13" count="85" type="stmt"/>
@@ -67,15 +67,15 @@
       <line num="156" count="1" type="stmt"/>
       <line num="158" count="2" type="stmt"/>
     </file>
-    <file name="stackImplement.ts" path="/mnt/c/Users/Deric/Desktop/cc-7-deric/cc-7-deric/linkedList/stackImplement.ts">
+    <file name="stackImplement.ts" path="/mnt/c/Users/Deric/Desktop/cc-7-deric/cc-7-deric/LinkedList and Stack/stackImplement.ts">
       <metrics statements="7" coveredstatements="7" conditionals="3" coveredconditionals="3" methods="4" coveredmethods="4"/>
-      <line num="20" count="15" type="stmt"/>
-      <line num="29" count="19" type="stmt"/>
-      <line num="30" count="19" type="stmt"/>
-      <line num="38" count="7" type="stmt"/>
-      <line num="39" count="7" type="stmt"/>
-      <line num="47" count="13" type="cond" truecount="2" falsecount="0"/>
-      <line num="48" count="13" type="stmt"/>
+      <line num="6" count="15" type="stmt"/>
+      <line num="10" count="19" type="stmt"/>
+      <line num="11" count="19" type="stmt"/>
+      <line num="15" count="7" type="stmt"/>
+      <line num="16" count="7" type="stmt"/>
+      <line num="20" count="13" type="cond" truecount="2" falsecount="0"/>
+      <line num="21" count="13" type="stmt"/>
     </file>
   </project>
 </coverage>
