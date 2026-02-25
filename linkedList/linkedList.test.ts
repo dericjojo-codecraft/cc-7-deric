@@ -1,57 +1,66 @@
 import { describe, test, expect } from "vitest";
-import { createNode, createLinkedList } from "./linkedList.js";
+import { Stack } from "./stackImplement.ts";
+import { evaluateExpression } from "./exprEval.ts";
 
-describe("LinkedList", () => {
+describe("Stack", () => {
 
-  test("addAtEnd returns correct index", () => {
+  test("push properly adds items to the top of the stack", () => {
     
-    const list = createLinkedList();
-    list.addAtEnd(90);
-    list.addAtEnd(100);
+    const stack = new Stack();
+    stack.push(10);
+    stack.push(20);
 
-    expect(list.tail?.data).toBe(100);
+    expect(stack.top()).toBe(20);
   });
 
-  test("removeFromEnd correctly removed a node from the end", () => {
-    const list = createLinkedList();
-    list.addAtEnd(90);
-    list.addAtEnd(100);
-    list.removeFromEnd();
+  test("pop properly removes items from the top of the stack", () => {
+    const stack = new Stack();
+    stack.push(10);
+    stack.push(20);
+    stack.pop();
 
-    expect(list.tail?.data).toBe(90);
+    expect(stack.top()).toBe(10);
   });
 
-  test("addAtHead correctly adds a node to the head", () => {
-    const list = createLinkedList();
-    list.addAtHead(90);
-    list.addAtHead(100);
+  test("top properly displays the top item of the stack", () => {
+    const stack = new Stack();
+    stack.push(10);
+    stack.push(20);
 
-    expect(list.head?.data).toBe(100);
+    expect(stack.top()).toBe(20);
   });
-
-  test("removeFromHead correctly removed a node from the head", () => {
-    const list = createLinkedList();
-    list.addAtHead(90);
-    list.addAtHead(100);
-    list.removeFromHead();
-
-    expect(list.head?.data).toBe(90);
-  });
-  
-  test("searchFor returns correct index", () => {
-    const list = createLinkedList();
-    list.addAtHead(90);
-    list.addAtHead(100);
-
-    expect(list.head?.data).toBe(90);
-  });
-
-  test("length correctly removed a node from the end", () => {
-    const list = createLinkedList();
-    list.addAtHead(90);
-    list.addAtHead(100);
-
-    expect(list.length()).toBe(2);
-  });
-
 });
+
+describe("Expression Evaluation", () => {
+
+  test("evaluateExpression evaluates simple expression", () => {
+
+    expect(evaluateExpression("2 * 5 + 3")).toBe(13);
+  });
+
+  test("evaluateExpression evaluates complex expression", () => {
+
+    expect(evaluateExpression("5 * ( 6 + 2 ) - 12 / 4")).toBe(37);
+  });
+
+  test("evaluateExpression does not evaluate invalid expression", () => {
+
+    expect(evaluateExpression("a * 3")).toBe(undefined);
+  });
+
+  test("evaluateExpression handles division", () => {
+    expect(evaluateExpression("12 / 4")).toBe(3);
+});
+
+test("evaluateExpression handles nested parentheses", () => {
+    expect(evaluateExpression("( 2 + 3 ) * ( 4 - 1 )")).toBe(15);
+});
+
+test("evaluateExpression handles single number", () => {
+    expect(evaluateExpression("5")).toBe(5);
+});
+
+test("evaluateExpression returns undefined for empty string", () => {
+    expect(evaluateExpression("")).toBe(undefined);
+});
+})
