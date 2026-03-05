@@ -2,22 +2,26 @@
   "name": "cc-7-deric",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/dericjojo-codecraft/cc-7-deric#readme",
-  "bugs": {
-    "url": "https://github.com/dericjojo-codecraft/cc-7-deric/issues"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dericjojo-codecraft/cc-7-deric.git"
+    "url": "git+https://github.com/Sanmitha4/cc-7-Sanmitha.git"
   },
-  "license": "ISC",
+  "keywords": [],
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Sanmitha4/cc-7-Sanmitha/issues"
   },
+  "homepage": "https://github.com/Sanmitha4/cc-7-Sanmitha#readme",
   "devDependencies": {
-    "vitest": "^4.0.18"
+    "@types/node": "^25.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

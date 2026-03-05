@@ -24,7 +24,7 @@ interface LinkedListInterface<T> {
     removeFromEnd(): T | null;
     addAtHead(t: T): void;
     removeFromHead(): T | null;
-    searchFor(t: T): number | string;
+    searchFor(t: T, compareVal: (t:T, v:T)=>boolean): boolean;
     length(): number;
     valueAtIndex(index: number): T | "Index out of bound";
 }
@@ -115,19 +115,22 @@ class LinkedList<T> implements LinkedListInterface<T> {
     };
 
     // method to return the index for an node given value
-    searchFor(t: T) {
+    searchFor(
+        t: T,
+        compareVal: (t:T, v:T) => boolean
+    ) {
         let index = 0;
         let temp = this.#head;
 
         while (temp !== null) {
-            if (temp!.data === t) {
-                return index;
+            if (compareVal(temp!.data, t)) {
+                return true;
             }
             temp = temp!.next;
             index++;
         }
 
-        return "index not found";
+        return false;
     };
 
     // method to get the length of the list
