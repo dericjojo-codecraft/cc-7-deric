@@ -1,4 +1,4 @@
-    import assert from 'node:assert'
+import assert from 'node:assert'
 
 /**
  * Write a Higher Order function(HOF):
