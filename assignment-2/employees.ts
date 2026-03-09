@@ -31,7 +31,7 @@ const employees: Employee[] = [
  */
 const totalSalaryAgeLessThan30: number = employees.reduce((acc, curr) => {
     if (curr.age < 30) {
-        acc += curr.salary;   // fix: was curr.age
+        acc += curr.salary;
     }
     return acc;
 }, 0);
@@ -44,9 +44,8 @@ const totalSalaryAgeLessThan30: number = employees.reduce((acc, curr) => {
  * with a single space, e.g. `"Molly Rojas"`.
  * Uses `reduce` to accumulate the strings into an array.
  */
-const getFullNames: Array<string> = employees.reduce((acc: Array<string>, curr) => {
-    acc.push(curr.firstName + " " + curr.lastName);
-    return acc;
+const getFullNames: Array<string> = employees.map((curr) => {
+    return curr.firstName + " " + curr.lastName;
 }, []);
 
 // ─── 3. Comma-separated email string ─────────────────────────────────────────
