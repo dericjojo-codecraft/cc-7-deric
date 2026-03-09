@@ -17,91 +17,86 @@ const generateArray = (n: number): number[] => {
 
 // ─── 2. Partition into odd / even arrays ─────────────────────────────────────
 
-const arr: number[] = generateArray(100);
-
 /**
- * Partitions the first 100 natural numbers into separate odd and even arrays.
- * - `odd`  contains all numbers where `n % 2 !== 0` (1, 3, 5, … 99)
- * - `even` contains all numbers where `n % 2 === 0` (2, 4, 6, … 100)
+ * Partitions the first 10 natural numbers into odd and even groups in a
+ * single `reduce` pass.
+ * - `odd`  collects numbers where `n % 2 !== 0` → [1, 3, 5, 7, 9]
+ * - `even` collects numbers where `n % 2 === 0` → [2, 4, 6, 8, 10]
  */
-const obj: { odd: number[]; even: number[] } = { odd: [], even: [] };
+const arr: number[] = generateArray(10);
 
-arr.forEach((value) => {
-    if (value % 2 === 0) obj.even.push(value);
-    else                 obj.odd.push(value);
-});
+const obj: { odd: number[] | number; even: number[] | number } = arr.reduce(
+    (acc, curr) => {
+        if (curr % 2 === 0) acc.even.push(curr);
+        else                acc.odd.push(curr);
+        return acc;
+    },
+    { odd: [] as number[], even: [] as number[] }
+);
 
 // ─── 3. Sum of odd / even numbers ────────────────────────────────────────────
 
 /**
- * Transforms the partitioned arrays into their respective sums.
- * - `odd`  becomes the sum of all odd numbers  from 1 to 100  → 2500
- * - `even` becomes the sum of all even numbers from 1 to 100  → 2550
+ * Collapses each partitioned array into its total sum using `reduce`.
+ * - `obj.odd`  → sum of [1,3,5,7,9]   = 25
+ * - `obj.even` → sum of [2,4,6,8,10]  = 30
  *
- * The two-step process mirrors the original: first accumulate values into
- * arrays, then reduce each array down to a single sum.
+ * The union type `number[] | number` on `obj` allows the values to be
+ * reassigned from arrays to their computed sums in place.
  */
-const newObj: { odd: number[] | number; even: number[] | number } = { odd: [], even: [] };
-
-arr.forEach((value: number) => {
-    if (value % 2 === 0) (newObj.even as number[]).push(value);
-    else                 (newObj.odd  as number[]).push(value);
-});
-
-newObj.even = (newObj.even as number[]).reduce((acc, curr) => acc + curr, 0);
-newObj.odd  = (newObj.odd  as number[]).reduce((acc, curr) => acc + curr, 0);
+obj.even = (obj.even as number[]).reduce((acc, curr) => acc + curr, 0);
+obj.odd  = (obj.odd  as number[]).reduce((acc, curr) => acc + curr, 0);
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 console.log("\n── 1. generateArray ──");
 
-// Length should equal n
 console.assert(generateArray(10).length === 10, "FAIL: length should equal n");
 console.log("PASS: length equals n");
 
-// First element is always 1
 console.assert(generateArray(5)[0] === 1, "FAIL: first element should be 1");
 console.log("PASS: first element is 1");
 
-// Last element equals n
-console.assert(generateArray(7)[6] === 7, "FAIL: last element should equal n");
+console.assert(generateArray(5)[4] === 5, "FAIL: last element should equal n");
 console.log("PASS: last element equals n");
 
-// n = 0 returns an empty array
 console.assert(generateArray(0).length === 0, "FAIL: n=0 should return an empty array");
 console.log("PASS: n=0 returns an empty array");
 
 
-console.log("\n── 2. obj (odd / even partition) ──");
+console.log("\n── 2. obj (partition) ──");
 
-// Together they should account for all 100 numbers
-console.assert(obj.odd.length + obj.even.length === 100, "FAIL: combined length should be 100");
-console.log("PASS: odd and even arrays together cover all 100 numbers");
+// Re-derive a fresh partition to test against (obj.odd/even are now numbers)
+const freshPartition = generateArray(10).reduce(
+    (acc, curr) => {
+        if (curr % 2 === 0) acc.even.push(curr);
+        else                acc.odd.push(curr);
+        return acc;
+    },
+    { odd: [] as number[], even: [] as number[] }
+);
 
-// Exactly 50 odd and 50 even numbers in 1..100
-console.assert(obj.odd.length  === 50, `FAIL: expected 50 odd numbers, got ${obj.odd.length}`);
-console.assert(obj.even.length === 50, `FAIL: expected 50 even numbers, got ${obj.even.length}`);
-console.log("PASS: 50 odd and 50 even numbers");
+console.assert(freshPartition.odd.length + freshPartition.even.length === 10, "FAIL: combined length should be 10");
+console.log("PASS: odd and even arrays together cover all 10 numbers");
 
-// Every value in odd is actually odd
-console.assert(obj.odd.every(n => n % 2 !== 0), "FAIL: odd array contains an even number");
+console.assert(freshPartition.odd.length  === 5, `FAIL: expected 5 odd numbers, got ${freshPartition.odd.length}`);
+console.assert(freshPartition.even.length === 5, `FAIL: expected 5 even numbers, got ${freshPartition.even.length}`);
+console.log("PASS: 5 odd and 5 even numbers");
+
+console.assert(freshPartition.odd.every(n  => n % 2 !== 0), "FAIL: odd array contains an even number");
 console.log("PASS: every entry in odd[] is odd");
 
-// Every value in even is actually even
-console.assert(obj.even.every(n => n % 2 === 0), "FAIL: even array contains an odd number");
+console.assert(freshPartition.even.every(n => n % 2 === 0), "FAIL: even array contains an odd number");
 console.log("PASS: every entry in even[] is even");
 
 
-console.log("\n── 3. newObj (sums) ──");
+console.log("\n── 3. obj (sums) ──");
 
-// Sum of odd numbers 1+3+…+99 = 50² = 2500
-console.assert(newObj.odd === 2500, `FAIL: expected odd sum 2500, got ${newObj.odd}`);
-console.log("PASS: sum of odd numbers is 2500");
+console.assert(obj.odd  === 25, `FAIL: expected odd sum 25, got ${obj.odd}`);
+console.log("PASS: sum of odd numbers is 25");
 
-// Sum of even numbers 2+4+…+100 = 50×51 = 2550
-console.assert(newObj.even === 2550, `FAIL: expected even sum 2550, got ${newObj.even}`);
-console.log("PASS: sum of even numbers is 2550");
+console.assert(obj.even === 30, `FAIL: expected even sum 30, got ${obj.even}`);
+console.log("PASS: sum of even numbers is 30");
 
-// Sanity check: odd + even = sum of 1..100 = 5050
-console.assert((newObj.odd as number) + (newObj.even as number) === 5050, "FAIL: odd + even should equal 5050");
-console.log("PASS: odd sum + even sum equals the total sum of 1..100 (5050)");
+console.assert((obj.odd as number) + (obj.even as number) === 55, "FAIL: odd + even should equal 55");
+console.log("PASS: odd sum + even sum equals total sum of 1..10 (55)");

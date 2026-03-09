@@ -2,17 +2,11 @@
 
 const vow = ["a","e","i","o","u"];
 const alphabets = ['a', 'b', 'c', 'd', 'e'];
-let obj:{vowels: Array<string>, consonants: Array<string>} = {
-    vowels: [],
-    consonants: []
-}
 
-alphabets.forEach(alpha => {
-    if(vow.includes(alpha)) {
-        obj.vowels.push(alpha)
-    } else {
-        obj.consonants.push(alpha);
-    }
-})
+const sortedObj = alphabets.reduce((acc, curr) => {
+    if(vow.includes(curr)) {acc.vowels.push(curr)}
+    else {acc.consonants.push(curr)}
+    return acc;
+}, { vowels: [] as string[], consonants: []  as string[]})
 
-//console.log(obj)
+console.log(sortedObj)
