@@ -11,7 +11,7 @@ type EvenOrOdd = "even" | "odd";
  * @returns an array containing n number of odd or even numbers
  */
 function printNumbers(n:number, evenOrOdd:EvenOrOdd):Array<number>|number {
-    let arr = [], i = 1;
+    const arr = [], i = 1;
     while(arr.length !== n) {
         if(evenOrOdd === "even" && i%2 === 0) {
             arr.push(i);

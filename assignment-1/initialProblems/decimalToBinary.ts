@@ -12,7 +12,7 @@ import assert from "assert";
 function convertToBinary(numInDecimal:number):string {
     let result = "";
     while(numInDecimal > 0) {
-        let remainder = numInDecimal%2;
+        const remainder = numInDecimal%2;
         result = remainder.toString()+result;
         numInDecimal = Math.floor(numInDecimal/2);
     }

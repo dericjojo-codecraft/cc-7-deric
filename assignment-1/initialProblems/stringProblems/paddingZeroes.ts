@@ -11,7 +11,7 @@ import assert from "assert";
  * @returns a string with padding if the original number doesn't meet the criteria
  */
 function padZerosBeforeNumber(num:number, numOfDigits:number):string {
-    let result = "", currSize = num.toString().length;
+    const currSize = num.toString().length;
     
     if(currSize >= numOfDigits) {
         return num.toString();

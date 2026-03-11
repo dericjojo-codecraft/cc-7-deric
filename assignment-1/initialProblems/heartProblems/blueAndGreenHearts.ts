@@ -20,7 +20,8 @@ import assert from "assert";
  * @returns a string that is in the structure required
  */
 function createGreenAndBlueHearts(num:number):string {
-    let result = "", row = "";
+    let result = "";
+    
     for(let i = 1; i <= num; i++) {
         if(i%2 == 0) {
             result += "💙 ".repeat(i)+"\n";

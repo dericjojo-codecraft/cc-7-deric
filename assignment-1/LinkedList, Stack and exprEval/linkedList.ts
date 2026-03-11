@@ -45,14 +45,9 @@ class LinkedList<T> implements LinkedListInterface<T> {
         return this.#tail ? this.#tail.data : null;
     }
 
-    constructor() {
-        this.#head = this.#head;
-        this.#tail = this.#tail;
-    }
-
     // method to add at the end of the list
     addAtEnd(t:T) {
-        let temp = new ListNode(t, null);
+        const temp = new ListNode(t, null);
 
         if(this.#head === null) {
             this.#head = temp; this.#head.next = null;
@@ -89,7 +84,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
 
     // method to add to the start of the list
     addAtHead(t: T) {
-        let temp = new ListNode(t, null);
+        const temp = new ListNode(t, null);
 
         if(this.#head !== null) {
             temp.next = this.#head!;
@@ -107,7 +102,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
         const temp = this.#head;
         this.#head = this.#head!.next;
 
-        let val = temp!.data;
+        const val = temp!.data;
         
         if(this.#head === null) { this.#tail = null }
 
@@ -119,7 +114,6 @@ class LinkedList<T> implements LinkedListInterface<T> {
         t: T,
         compareVal: (t:T, v:T) => boolean
     ) {
-        let index = 0;
         let temp = this.#head;
 
         while (temp !== null) {
@@ -127,7 +121,6 @@ class LinkedList<T> implements LinkedListInterface<T> {
                 return true;
             }
             temp = temp!.next;
-            index++;
         }
 
         return false;

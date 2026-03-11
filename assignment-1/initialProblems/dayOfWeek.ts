@@ -12,8 +12,6 @@ import assert from "assert";
 function getDayOfWeek(dayName:string):number | "Day not found" {
     const dayNames = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
-    let val = -1;
-
     return dayNames.indexOf(dayName) ? dayNames.indexOf(dayName) : "Day not found";
 }
 
