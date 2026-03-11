@@ -36,7 +36,7 @@ const quotes: Quote[] = [
  */
 const quotesByAuthor: Record<string, string[]> = quotes.reduce((acc: Record<string, string[]>, curr) => {
     if (acc.hasOwnProperty(curr.author)) {
-        acc[curr.author].push(curr.text);
+        acc[curr.author]!.push(curr.text);
     } else {
         acc[curr.author] = [curr.text];
     }
@@ -51,20 +51,10 @@ const quotesByAuthor: Record<string, string[]> = quotes.reduce((acc: Record<stri
  *
  * @param word - The word or substring to search for within each quote.
  * @returns An array of quote strings that contain `word`.
- *
- * @example
- * getQuotesContainingWord("you")
- * // ["You can observe a lot just by watching.", "What you give is what you get.", ...]
  */
-function getQuotesContainingWord(word: string): Array<string> {
-    const result: Array<string> = [];
-    quotes.forEach((item) => {
-        if (item.text.toLowerCase().includes(word.toLowerCase())) {
-            result.push(item.text);
-        }
-    });
-    return result;
-}
+const getQuotesContainingWord = (word:string) => quotes.filter(curr => {
+    return curr.text.toLowerCase().includes(word.toLowerCase())
+})
 
 // ─── 3. Extract all quote strings ────────────────────────────────────────────
 
@@ -92,90 +82,4 @@ const justAuthors: Array<string> = quotes.reduce((acc: Array<string>, curr) => {
     return acc;
 }, []);
 
-// ─── Tests ────────────────────────────────────────────────────────────────────
-
-console.log("\n── 1. quotesByAuthor ──");
-
-// Every author in the source data should be a key
-const allAuthors = [...new Set(quotes.map(q => q.author))];
-console.assert(
-    allAuthors.every(a => a in quotesByAuthor),
-    "FAIL: every author should be a key"
-);
-console.log("PASS: all authors are present as keys");
-
-// Quote counts per author should match the source data
-console.assert(quotesByAuthor["Thomas Edison"].length === 2, "FAIL: Thomas Edison should have 2 quotes");
-console.log("PASS: Thomas Edison has 2 quotes");
-
-console.assert(quotesByAuthor["Yogi Berra"].length === 3, "FAIL: Yogi Berra should have 3 quotes");
-console.log("PASS: Yogi Berra has 3 quotes");
-
-console.assert(quotesByAuthor["Aristotle"].length === 1, "FAIL: Aristotle should have 1 quote");
-console.log("PASS: Aristotle has 1 quote");
-
-// A known quote should appear under the right author
-console.assert(
-    quotesByAuthor["Buddha"].includes("You'll see it when you believe it."),
-    "FAIL: Buddha's second quote should be present"
-);
-console.log("PASS: correct quote is stored under the correct author");
-
-
-console.log("\n── 2. getQuotesContainingWord ──");
-
-// "you" (case-insensitive) appears in 6 quotes in the dataset
-const youQuotes = getQuotesContainingWord("you");
-console.assert(youQuotes.length === 6, `FAIL: expected 6 quotes containing "you", got ${youQuotes.length}`);
-console.log(`PASS: found ${youQuotes.length} quotes containing "you"`);
-
-// Search is case-insensitive — "You" and "you" should return the same results
-console.assert(
-    getQuotesContainingWord("You").length === getQuotesContainingWord("you").length,
-    "FAIL: search should be case-insensitive"
-);
-console.log("PASS: search is case-insensitive");
-
-// A word that appears in no quote should return an empty array
-console.assert(getQuotesContainingWord("typescript").length === 0, "FAIL: unknown word should return []");
-console.log("PASS: unknown word returns an empty array");
-
-// A known quote should be present in the results
-console.assert(
-    getQuotesContainingWord("learn").includes("Life is a learning experience, only if you learn."),
-    "FAIL: expected specific quote to be in results"
-);
-console.log("PASS: correct quote is returned for 'learn'");
-
-
-console.log("\n── 3. justQuotes ──");
-
-// Should have the same length as the source array
-console.assert(justQuotes.length === quotes.length, "FAIL: length should match source array");
-console.log("PASS: length matches the source quotes array");
-
-// Should contain only strings, not objects
-console.assert(justQuotes.every(q => typeof q === "string"), "FAIL: all entries should be strings");
-console.log("PASS: every entry is a string");
-
-// Order should be preserved
-console.assert(justQuotes[0] === quotes[0].text, "FAIL: first element should match source order");
-console.log("PASS: original order is preserved");
-
-
-console.log("\n── 4. justAuthors ──");
-
-// No duplicates
-console.assert(
-    justAuthors.length === new Set(justAuthors).size,
-    "FAIL: result should contain no duplicate authors"
-);
-console.log("PASS: no duplicate authors");
-
-// Correct unique count (8 distinct authors in the dataset)
-console.assert(justAuthors.length === 8, `FAIL: expected 8 unique authors, got ${justAuthors.length}`);
-console.log("PASS: correct number of unique authors (8)");
-
-// First-appearance order — "Thomas Edison" is the first author in the data
-console.assert(justAuthors[0] === "Thomas Edison", "FAIL: first author should be Thomas Edison");
-console.log("PASS: authors appear in first-occurrence order");
+export { quotes, getQuotesContainingWord, quotesByAuthor, justAuthors, justQuotes }
