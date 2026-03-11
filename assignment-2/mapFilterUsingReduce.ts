@@ -13,3 +13,5 @@ const filter = <T> (array:T[], predicate:(item:T) => boolean): T[] =>{
         return acc;
     }, []);
 }
+
+export { map, filter };

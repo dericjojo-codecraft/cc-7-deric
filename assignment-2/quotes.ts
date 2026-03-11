@@ -35,7 +35,7 @@ const quotes: Quote[] = [
  * // ["You can observe a lot just by watching.", ...]
  */
 const quotesByAuthor: Record<string, string[]> = quotes.reduce((acc: Record<string, string[]>, curr) => {
-    if (acc.hasOwnProperty(curr.author)) {
+    if (Object.hasOwn(acc, curr.author)) {
         acc[curr.author]!.push(curr.text);
     } else {
         acc[curr.author] = [curr.text];
