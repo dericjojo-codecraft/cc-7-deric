@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { Stack } from "./stackImplement.ts";
+import { Stack } from "./stackImplement";
 
 describe("Stack", () => {
 
