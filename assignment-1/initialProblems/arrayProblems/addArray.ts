@@ -10,15 +10,14 @@ import assert from "assert";
  * @param b represents the second array
  * @returns an array of items that represent the sum at each index
  */
-function addArrays(a:Array<number>, b:Array<number>):Array<number> {
-    let arr:Array<number> = [], index = 0, minSize;
-
-    minSize = a.length >= b.length ? b.length:a.length;
+function addArrays(a:number[], b:number[]):number[] {
+    const arr:number[] = [];
+    const minSize = a.length >= b.length ? b.length:a.length;
 
     for(let i = 0; i < minSize; i++) {
         arr.push(a[i]! + b[i]!);
     }
-    index = minSize;
+    const index = minSize;
 
     if(a.length > b.length) {
       for(let i = index; i < a.length; i++) {

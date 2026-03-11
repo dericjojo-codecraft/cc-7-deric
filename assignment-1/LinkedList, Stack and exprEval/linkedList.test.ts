@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { ListNode, LinkedList } from "./linkedList.ts";
+import { ListNode, LinkedList } from "./linkedList";
 
 describe("ListNode", () => {
 
@@ -253,25 +253,25 @@ describe("LinkedList", () => {
             list.addAtEnd(10);
             list.addAtEnd(20);
             list.addAtEnd(30);
-            expect(list.searchFor(20)).toBe(1);
+            expect(list.searchFor(20, (a, b) => a === b)).toBe(1);
         });
 
         test("returns 0 for head node", () => {
             const list = new LinkedList<number>();
             list.addAtEnd(10);
             list.addAtEnd(20);
-            expect(list.searchFor(10)).toBe(0);
+            expect(list.searchFor(10, (a, b) => a === b)).toBe(0);
         });
 
-        test("returns 'index not found' for missing value", () => {
+        test("returns false for missing value", () => {
             const list = new LinkedList<number>();
             list.addAtEnd(10);
-            expect(list.searchFor(99)).toBe("index not found");
+            expect(list.searchFor(99, (a, b) => a === b)).toBe("index not found");
         });
 
-        test("returns 'index not found' on empty list", () => {
+        test("returns false on empty list", () => {
             const list = new LinkedList<number>();
-            expect(list.searchFor(10)).toBe("index not found");
+            expect(list.searchFor(10, (a, b) => a === b)).toBe("index not found");
         });
 
     });

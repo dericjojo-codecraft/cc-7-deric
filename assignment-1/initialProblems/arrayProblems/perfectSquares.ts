@@ -10,7 +10,7 @@ import assert from "assert";
  * @returns an array of n number of squares
  */
 function generateFirstSquares(n:number):Array<number> {
-    let squares:Array<number> = [];
+    const squares:Array<number> = [];
 
     for(let i = 1; i <= n; i++) {
         squares.push(i*i);

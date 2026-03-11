@@ -11,9 +11,9 @@ const items = purchases.split("\n").filter((line, index) => {
     if(index === 0) {return line};
     if(!line.includes("4")) {return line};
 }).map((line) => {
-    let [item, quantity] = line.split(" ");
-    quantity = (Number(quantity)+10).toString();
-    return item+" "+quantity;
+    const [item, quantity] = line.split(" ");
+    const newQuantity = (Number(quantity)+10).toString();
+    return item+" "+newQuantity;
 })
 
 assert.strictEqual(items.length, 4, "Header + 3 items without '4' should remain");

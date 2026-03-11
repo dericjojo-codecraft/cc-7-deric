@@ -24,7 +24,7 @@ interface LinkedListInterface<T> {
     removeFromEnd(): T | null;
     addAtHead(t: T): void;
     removeFromHead(): T | null;
-    searchFor(t: T, compareVal: (t:T, v:T)=>boolean): boolean;
+    searchFor(t: T, compareVal: (t:T, v:T)=>boolean): number | "index not found";
     length(): number;
     valueAtIndex(index: number): T | "Index out of bound";
 }
@@ -45,14 +45,9 @@ class LinkedList<T> implements LinkedListInterface<T> {
         return this.#tail ? this.#tail.data : null;
     }
 
-    constructor() {
-        this.#head = this.#head;
-        this.#tail = this.#tail;
-    }
-
     // method to add at the end of the list
     addAtEnd(t:T) {
-        let temp = new ListNode(t, null);
+        const temp = new ListNode(t, null);
 
         if(this.#head === null) {
             this.#head = temp; this.#head.next = null;
@@ -89,7 +84,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
 
     // method to add to the start of the list
     addAtHead(t: T) {
-        let temp = new ListNode(t, null);
+        const temp = new ListNode(t, null);
 
         if(this.#head !== null) {
             temp.next = this.#head!;
@@ -107,7 +102,7 @@ class LinkedList<T> implements LinkedListInterface<T> {
         const temp = this.#head;
         this.#head = this.#head!.next;
 
-        let val = temp!.data;
+        const val = temp!.data;
         
         if(this.#head === null) { this.#tail = null }
 
@@ -118,19 +113,18 @@ class LinkedList<T> implements LinkedListInterface<T> {
     searchFor(
         t: T,
         compareVal: (t:T, v:T) => boolean
-    ) {
-        let index = 0;
-        let temp = this.#head;
+    ): number | "index not found" {
+        let temp = this.#head, index = 0;
 
         while (temp !== null) {
             if (compareVal(temp!.data, t)) {
-                return true;
+                return index;
             }
+            index += 1;
             temp = temp!.next;
-            index++;
         }
 
-        return false;
+        return "index not found";
     };
 
     // method to get the length of the list

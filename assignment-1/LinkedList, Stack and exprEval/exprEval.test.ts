@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { evaluateExpression } from "./exprEval.ts";
+import { evaluateExpression } from "./exprEval";
 
 describe("evaluateExpression", () => {
 

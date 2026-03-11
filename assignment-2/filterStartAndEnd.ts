@@ -3,7 +3,7 @@
  * @param items - Array of strings to filter
  * @returns A new array excluding strings that start with 'mang' or end with 'fy'
  */
-let items = ['mangalore', 'semangin', '2 lonely', 'verify', 'rectify', 'mangala', 'notifyy'];
+const items = ['mangalore', 'semangin', '2 lonely', 'verify', 'rectify', 'mangala', 'notifyy'];
 
 const filtered = items
     .filter((item) => !item.startsWith('mang'))
