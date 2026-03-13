@@ -29,9 +29,9 @@ function getFileType(path: string): Promise<'FILE'|'DIRECTORY'|'OTHER'> {
     })
 }
 
-getFileType(_fileName)
-    .then(type => console.log("Type: ", type))
-    .catch(err => console.error(err))
+// getFileType(_fileName)
+//     .then(type => console.log("Type:", type))
+//     .catch(err => console.error(err))
 
 //function that gets you the file path of the file, or names of items of the folder
 /**
@@ -58,8 +58,8 @@ async function getContents(path: string):Promise<string|string[]> {
     }
 }
 
-getContents(_dirName)
-    .then(files => console.log("Files: ", files))
+getContents(_fileName)
+    .then(files => console.log("Files:", files))
     .catch(err => console.error(err))
 
 // function that gets the size of the file or folder at given path
@@ -68,28 +68,17 @@ getContents(_dirName)
  * @param path is the parameter that is a file, directory or other
  * @returns the size of a path; if path is a file, returns size of the file; if path is a directory, calls the function again on the inner path and gets the size of the whole directory
  */
-async function getSize(path:string):Promise<number> {
-    const fileType = await getFileType(path)
-    switch (fileType) {
-        case "FILE": {
-            const stats = await fs.promises.stat(path)
-            return stats.size
-        }
-        case "DIRECTORY": {
-            const files = await fs.promises.readdir(path)
-            if (files.length === 0) return Promise.reject("No files available");
-
-            const sizes = await Promise.all(
-                files.map(file => getSize(`${path}/${file}`))
-            )
-            return sizes.reduce((acc, curr) => acc+curr, 0);
-        }
-        default: {
-            return Promise.reject(new Error("Unsupported file type"));
-        }
+async function getSize(filePath: string): Promise<number> {
+    const contents = await getContents(filePath);
+    if (Array.isArray(contents)) {
+        return Promise.all(
+            contents.map(file => fs.promises.stat(file).then(stats => stats.size))
+        ).then(sizes => sizes.reduce((acc, curr) => acc + curr, 0));
+    } else {
+        return fs.promises.stat(contents).then(stats => stats.size);
     }
 }
 
-getSize(_fileName)
+getSize(_dirName)
     .then(size => console.log("Size: "+size/1024+"kB"))
     .catch(err => console.error(err))

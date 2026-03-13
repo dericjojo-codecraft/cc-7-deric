@@ -36,7 +36,7 @@ function getFileType(path: string): Promise<'FILE'|'DIRECTORY'|'OTHER'> {
  * @returns the content of a path; if path is a file, returns file name; if path is a directory, calls the function again on the inner path
  */
 async function getContents(path: string):Promise<string|string[]> { 
-    const type = await getFileType(path)
+    const type = await getFileType(path);
     switch(type) {
         case "FILE": {
             return path;
