@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { T } from 'vitest/dist/chunks/traces.d.402V_yFI';
 
 const _fileName = path.resolve('./assignment-1/test.txt');
 const _dirName = path.dirname(_fileName);
@@ -43,16 +42,19 @@ getFileType(_fileName)
 async function getContents(path: string):Promise<string|string[]> { 
     const type = await getFileType(path)
     switch(type) {
-        case "FILE":
+        case "FILE": {
             return path;
-        case "DIRECTORY":
+        }
+        case "DIRECTORY": {
             const files = await fs.promises.readdir(path)
             const result = await Promise.all(
                 files.map(item => getContents(`${path}/${item}`))
             )
             return result.flat();
-        case "OTHER":
+        }
+        case "OTHER": {
             return Promise.reject(new Error("Unsupported file type"));
+        }
     }
 }
 
@@ -69,10 +71,11 @@ getContents(_dirName)
 async function getSize(path:string):Promise<number> {
     const fileType = await getFileType(path)
     switch (fileType) {
-        case "FILE":
+        case "FILE": {
             const stats = await fs.promises.stat(path)
             return stats.size
-        case "DIRECTORY":
+        }
+        case "DIRECTORY": {
             const files = await fs.promises.readdir(path)
             if (files.length === 0) return Promise.reject("No files available");
 
@@ -80,8 +83,10 @@ async function getSize(path:string):Promise<number> {
                 files.map(file => getSize(`${path}/${file}`))
             )
             return sizes.reduce((acc, curr) => acc+curr, 0);
-        default:
+        }
+        default: {
             return Promise.reject(new Error("Unsupported file type"));
+        }
     }
 }
 
