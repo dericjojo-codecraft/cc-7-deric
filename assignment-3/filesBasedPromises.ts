@@ -6,7 +6,11 @@ const _dirName = path.dirname(_fileName);
 
 // Returns a promise that when resolved will get you the type of file
 // when error, it will come back with an Error with message "file system error"
-
+/**
+ * Promise based implementation to get the type of a path
+ * @param path is the parameter that is a file, directory or other
+ * @returns the type of the path provided
+ */
 function getFileType(path: string): Promise<'FILE'|'DIRECTORY'|'OTHER'> {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -30,6 +34,11 @@ getFileType(_fileName)
     .catch(err => console.error("file system error", err))
 
 //function that gets you the file path of the file, or names of items of the folder
+/**
+ * Promise based implementation to get the content of a path
+ * @param path is the parameter that is a file, directory or other
+ * @returns the content of a path; if path is a file, returns file name; if path is a directory, calls the function again on the inner path
+ */
 function getContents(path: string):Promise<string|string[]> {
     return new Promise((resolve, reject) => {
         getFileType(path)
@@ -62,6 +71,11 @@ getContents(_dirName)
     .catch(err => console.error(err));
 
 // function that gets the size of the file or folder at given path
+/**
+ * Promise based implementation to get the total size of a path
+ * @param path is the parameter that is a file, directory or other
+ * @returns the size of a path; if path is a file, returns size of the file; if path is a directory, calls the function again on the inner path and gets the size of the whole directory
+ */
 function getSize(path:string):Promise<number> {
     return new Promise((resolve, reject) => {
     getFileType(path)
