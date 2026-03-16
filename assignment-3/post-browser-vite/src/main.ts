@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const viewCommentsBtn = document.getElementById("view-comments-btn") as HTMLButtonElement;
     const loader = document.getElementById("post-loader") as HTMLDivElement;
     const postTextContent = document.getElementById("post-text-content") as HTMLDivElement;
+    const jumpInput = document.getElementById("jump-input") as HTMLInputElement;
+    const jumpButton = document.getElementById("jump-button") as HTMLButtonElement;
 
     // DOM element assertions
     console.assert(postNumber !== null, "postNumber element not found — check id='post-number'");
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.assert(postTextContent !== null, "postTextContent not found — check id='post-text-content'");
 
 
-    const TOTAL_POSTS = 10;
+    const TOTAL_POSTS = 100;
     let currentId = 1;
 
     async function loadPost(id: number) {
@@ -118,6 +120,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    jumpButton.addEventListener("click", () => {
+        const jumpId = parseInt(jumpInput.value);
+        if(jumpId > 100) {
+            alert("Post id cannot exceed 100");
+            jumpInput.style.outline = "2px solid red";
+            return;
+        } else if(jumpId < 1) {
+            alert("Post id cannot be less than 1");
+            jumpInput.style.outline = "2px solid red";
+            return;
+        }
+
+        jumpInput.style.outline = "";
+        currentId = jumpId;
+        updateButtons();
+        loadPost(currentId);
+    });
+
     updateButtons();
     loadPost(currentId);
 });
@@ -133,7 +153,11 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <main id="post-container">
         <article class="card">
             <div class="post-content-wrapper">
-            <span class="post-id" id="post-id-display">Post #<span id="post-number"></span> of 10</span>
+            <span class="post-id" id="post-id-display">Post #<span id="post-number"></span> of 100</span>
+            <div>
+            <input id="jump-input" type="number" name="input" placeholder="Jump to post"/>
+            <button id="jump-button">Submit</button>
+            </div>
             <div class="post-text-area" id="post-text-area">
                 <div class="overlay-loader" id="post-loader" style="display: none;">
                 <div class="loader"></div>
