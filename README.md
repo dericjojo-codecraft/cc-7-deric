@@ -229,6 +229,7 @@ evaluateExpression("")                         // undefined — empty string
 A Vite + TypeScript single-page app that browses posts from the [JSONPlaceholder API](https://jsonplaceholder.typicode.com/posts).
 
 **Live demo:** [post-browser-nine.vercel.app](https://post-browser-nine.vercel.app)
+![alt text](./assets/post-browser-image.png)
 
 ### Features
 
