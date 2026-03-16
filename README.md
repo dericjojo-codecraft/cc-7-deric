@@ -178,14 +178,13 @@ Evaluates arithmetic expressions respecting operator precedence and parentheses 
 ```mermaid
 flowchart TD
   A[Read next token] --> B{Token type?}
-  B -->|Number| C[Push → numStack]
-  B -->|Operator| D{Pending op\nhas higher precedence?}
-  D -->|Yes| E[Apply pending op\nthen push new op]
-  D -->|No| F[Push → opStack]
-  B -->|Open paren| G[Push '(' → opStack]
-  B -->|Close paren| H[Apply ops until '(']
-  H --> I[Discard the '(']
-  C & E & F & G & I --> J{More tokens?}
+  B -->|Number| C[Push to numStack]
+  B -->|Operator| D{Higher-precedence op\nalready on opStack?}
+  D -->|Yes| E[Apply that op first\nthen push new op]
+  D -->|No| F[Push to opStack]
+  B -->|Open paren| G[Push open-paren to opStack]
+  B -->|Close paren| H[Apply ops until open-paren\nthen discard it]
+  C & E & F & G & H --> J{More tokens?}
   J -->|Yes| A
   J -->|No| K[Apply remaining ops]
   K --> L[numStack top = result]
