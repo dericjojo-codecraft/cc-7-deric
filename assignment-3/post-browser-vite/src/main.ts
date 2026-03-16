@@ -8,7 +8,6 @@ interface Comment {
 
 document.addEventListener("DOMContentLoaded", () => {
     const model:ModelManager = new ModelManager;
-    (window as any).model = model;
 
     const postNumber = document.getElementById("post-number") as HTMLSpanElement;
     const titleElement = document.getElementById("post-title-display") as HTMLHeadingElement;
