@@ -136,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         jumpInput.style.outline = "";
+        jumpInput.value = "";
         currentId = jumpId;
         updateButtons();
         loadPost(currentId);
