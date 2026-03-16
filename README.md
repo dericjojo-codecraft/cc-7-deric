@@ -273,9 +273,9 @@ npm install
 Run any assignment file directly:
 
 ```bash
-npx ts-node assignment-1/initialProblems/oddOrEven.ts
-npx ts-node assignment-2/employees.ts
-npx ts-node assignment-3/users.ts
+node assignment-1/initialProblems/oddOrEven.ts
+node assignment-2/employees.ts
+node assignment-3/users.ts
 ```
 
 ---
