@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { link } from './users';
+import type { User } from './users';
 
 const mockUsers = [
     { id: 1, name: "Leanne Graham", username: "Bret", email: "Sincere@april.biz", address: { street: "Kulas Light", suite: "Apt. 556", city: "Gwenborough", zipcode: "92998-3874", geo: { lat: -37.3159, lng: 81.1496 } }, phone: "1-770-736-0328", website: "hildegard.org", company: { name: "Romaguera-Crona", catchPhrase: "Multi-layered client-server neural-net", bs: "harness real-time e-markets" } },
@@ -18,21 +20,33 @@ beforeAll(() => {
         ok: true,
         status: 200,
         json: () => Promise.resolve(mockUsers)
-    }))
-})
+    }));
+});
 
 afterAll(() => {
     vi.resetAllMocks();
-})
+});
 
 describe('Testing Mock API', () => {
     it('Fetching should return successful', async () => {
-        const response = await vi.mocked(fetch).mock.results[0]?.value;
+        const response = await fetch(link);
         expect(response.status).toBe(200);
     });
 
     it('Array should contain 10 users', async () => {
-        const response = await vi.mocked(fetch).mock.results;
-        expect(response.length).toBe(10);
+        const response = await fetch(link);
+        const data = await response.json() as User[];
+        expect(data.length).toBe(10);
     });
-})
+
+    it('First user should be Leanne Graham', async () => {
+        const response = await fetch(link);
+        const data = await response.json() as User[];
+        expect(data[0]!.name).toBe('Leanne Graham');
+    });
+
+    it('Fetch should have been called with the correct link', async () => {
+        await fetch(link);
+        expect(vi.mocked(fetch)).toHaveBeenCalledWith(link);
+    });
+});

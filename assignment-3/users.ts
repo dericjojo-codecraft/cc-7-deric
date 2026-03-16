@@ -41,6 +41,7 @@ async function getUsers(delay:number = 2000): Promise<User[]> {
 }
 
 export { getUsers, link }
+export type { User }
 getUsers()
     .then(users => console.log(users))
     .catch(err => console.error(err));
