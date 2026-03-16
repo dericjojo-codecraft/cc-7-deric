@@ -304,6 +304,6 @@ Tests are written with **Vitest** and cover all major modules including LinkedLi
 | TypeScript | 5.9 | Primary language |
 | Vitest | 4.x | Unit testing framework |
 | ESLint + typescript-eslint | 10.x / 8.x | Linting & type-aware rules |
-| ts-node | 10.x | Run `.ts` files without compiling |
+| node | 10.x | Run `.ts` files |
 | Vite | 8.x | Post Browser bundler & dev server |
 | Node.js | ≥ 20 | Runtime |
