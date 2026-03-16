@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 commentsContainer.appendChild(div);
             });
         } catch (err) {
-            commentsContainer.textContent = "Error loading comments";
+            commentsContainer.textContent = "Error loading comments: " + err;
         }
     });
 
