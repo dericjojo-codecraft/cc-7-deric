@@ -7,7 +7,7 @@ interface Comment {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const model = new ModelManager;
+    const model:ModelManager = new ModelManager;
     (window as any).model = model;
 
     const postNumber = document.getElementById("post-number") as HTMLSpanElement;
