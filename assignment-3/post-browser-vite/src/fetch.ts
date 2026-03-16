@@ -46,4 +46,9 @@ export class ModelManager {
     const response = await fetch(link + id + "/comments");
     return await response.json();
   }
+
+  clearCache():void {
+    this.cache.clear();
+    this.lastFetched = Date.now();
+  }
 }

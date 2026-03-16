@@ -87,7 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
             updateButtons();
         }
     });
-    refreshBtn.addEventListener("click", () => loadPost(currentId));
+    refreshBtn.addEventListener("click", () => {
+        model.clearCache();
+        loadPost(currentId)
+    });
 
     viewCommentsBtn.addEventListener("click", async () => {
         commentsContainer.innerHTML = "";
