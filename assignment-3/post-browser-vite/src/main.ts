@@ -8,6 +8,7 @@ interface Comment {
 
 document.addEventListener("DOMContentLoaded", () => {
     const model:ModelManager = new ModelManager;
+    (window as any).model = model;
 
     const postNumber = document.getElementById("post-number") as HTMLSpanElement;
     const titleElement = document.getElementById("post-title-display") as HTMLHeadingElement;
@@ -89,7 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     refreshBtn.addEventListener("click", () => {
         model.clearCache();
-        loadPost(currentId)
+        currentId = 1;
+        loadPost(currentId);
     });
 
     viewCommentsBtn.addEventListener("click", async () => {
@@ -140,6 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
         currentId = jumpId;
         updateButtons();
         loadPost(currentId);
+    });
+    jumpInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") jumpButton.click();
     });
 
     updateButtons();
