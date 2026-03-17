@@ -1,34 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// mock API response for deterministic tests
-const mockPost = (id: number) => ({
-    id,
-    title: `Mock Title ${id}`,
-    body: `Mock Body ${id}`
-});
-
-const mockComments = [
-    { id: 1, name: "Mock User", email: "mock@test.com", body: "Mock Comment" }
-];
-
-test.beforeEach(async ({ page }) => {
-    // intercept all post requests and return mock data
-    await page.route("**/posts/**", async route => {
-        const url = route.request().url();
-        if (url.includes("comments")) {
-            await route.fulfill({ json: mockComments });
-        } else {
-            const id = parseInt(url.split("/").pop() || "1");
-            await route.fulfill({ json: mockPost(id) });
-        }
-    });
-
-    await page.goto("/");
-    // wait for initial load to complete before each test
-    await expect(page.locator("#post-loader")).toBeHidden();
-    await expect(page.locator("#post-title-display")).not.toBeEmpty();
-});
-
 // Navigation
 test("page loads with post 1", async ({ page }) => {
     await expect(page.locator("#post-number")).toHaveText("1");
