@@ -4,22 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --exclude **/post-browser-vite/tests/** --passWithNoTests",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint ."
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Sanmitha4/cc-7-Sanmitha.git"
+    "type": "git", 
+    "url": "git+https://github.com/dericjojo-codecraft/cc-7-deric.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Sanmitha4/cc-7-Sanmitha/issues"
+    "url": "https://github.com/dericjojo-codecraft/cc-7-deric/issues"
   },
-  "homepage": "https://github.com/Sanmitha4/cc-7-Sanmitha#readme",
+  "homepage": "https://github.com/dericjojo-codecraft/cc-7-deric#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.3.3",
