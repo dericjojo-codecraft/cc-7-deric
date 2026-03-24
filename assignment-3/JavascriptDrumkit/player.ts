@@ -45,27 +45,31 @@ class Player {
 
         for (let i = startIndex; i < session.beats.length; i++) {
             const current = session.beats[i];
-            const previous = session.beats[i - 1];
+
+            if(!current) continue;
 
             if (i === startIndex) {
                 // first beat plays at its own time
-                currentDelay = i === 0 ? current!.timestamp : 0;
+                currentDelay = i === 0 ? current.timestamp : 0;
             } else {
-                // 1. calculate the gap from the previous beat
-                const gap = current!.timestamp - previous!.timestamp;
+                const previous = session.beats[i - 1];
+                if (!previous) {} else {
+                    // 1. calculate the gap from the previous beat
+                    const gap = current.timestamp - previous.timestamp;
 
-                // 2. if the PREVIOUS item was a PAUSE_START, and THIS is a PAUSE_STOP,
-                if (previous!.type === "PAUSE_START" && current!.type === "PAUSE_STOP") { continue };
+                    // 2. if the PREVIOUS item was a PAUSE_START, and THIS is a PAUSE_STOP,
+                    if (previous.type === "PAUSE_START" && current.type === "PAUSE_STOP") { continue };
 
-                // 3. else add the gap to our running timer
-                currentDelay += gap;
+                    // 3. else add the gap to our running timer
+                    currentDelay += gap;
+                }
             }
 
             // 4. add to schedule if it's a BEAT type
-            if (current!.type === "BEAT") {
+            if (current.type === "BEAT") {
                 const timer = setTimeout(() => {
                     this.beatIndex = i+1;
-                    this.engine(current!);
+                    this.engine(current);
                     this.notify();
                 }, currentDelay);
                 

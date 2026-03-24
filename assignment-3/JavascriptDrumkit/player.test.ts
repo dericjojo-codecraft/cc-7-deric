@@ -97,6 +97,42 @@ describe('Player', () => {
             player.pauseTimeline();
             expect(player['beatIndex']).toBeGreaterThan(0);
         });
+    
+        it('handles multiple pause intervals correctly', () => {
+            const multiPauseSession: Session = {
+                beats: [
+                    { type: "BEAT", key: "A", timestamp: 1000 },
+                    { type: "PAUSE_START", timestamp: 5000 },
+                    { type: "PAUSE_STOP", timestamp: 10000 },
+                    { type: "BEAT", key: "B", timestamp: 11000 },
+                    { type: "PAUSE_START", timestamp: 12000 },
+                    { type: "PAUSE_STOP", timestamp: 15000 },
+                    { type: "BEAT", key: "C", timestamp: 16000 },
+                ]
+            };
+
+            const multiPlayer = new Player(multiPauseSession, mockPlaybackEngine);
+            multiPlayer.playTimeline();
+
+            // 1. Verify Beat A
+            vi.advanceTimersByTime(1000);
+            expect(mockPlaybackEngine).toHaveBeenLastCalledWith(multiPauseSession.beats[0]);
+
+            // 2. Verify Beat B 
+            // Calculation: A(1000) + Gap to Pause(4000) + Gap to B(1000) = 6000ms
+            vi.advanceTimersByTime(4999);
+            expect(mockPlaybackEngine).toHaveBeenCalledTimes(1); 
+            vi.advanceTimersByTime(1);
+            expect(mockPlaybackEngine).toHaveBeenCalledTimes(2);
+            expect(mockPlaybackEngine).toHaveBeenLastCalledWith(multiPauseSession.beats[3]);
+
+            // 3. Verify Beat C
+            // Calculation: Previous(6000) + Gap B to Pause2(1000) + Gap Pause2 to C(1000) = 8000ms
+            // We already advanced 6000ms, so we need 2000ms more.
+            vi.advanceTimersByTime(2000);
+            expect(mockPlaybackEngine).toHaveBeenCalledTimes(3);
+            expect(mockPlaybackEngine).toHaveBeenLastCalledWith(multiPauseSession.beats[6]);
+        });
     });
 
     // --- Reset ---
@@ -130,4 +166,48 @@ describe('Player', () => {
             expect(listener).not.toHaveBeenCalled();
         });
     });
+
+    // --- Achieve coverage ---
+    describe('other tests', () => {
+        it('skips over undefined or null beats in the session', () => {
+            const sparseBeats = [
+                { type: "BEAT", key: "A", timestamp: 1000 },
+                undefined, // This triggers the !current check
+                { type: "BEAT", key: "B", timestamp: 2000 },
+                
+            ] as unknown as (Beat | Pause)[];
+
+            const sparseSession: Session = { beats: sparseBeats };
+            const sparsePlayer = new Player(sparseSession, mockPlaybackEngine);
+
+            sparsePlayer.playTimeline();
+
+            vi.advanceTimersByTime(2000);
+            
+            // Should have skipped the undefined and played both A and B
+            expect(mockPlaybackEngine).toHaveBeenCalledTimes(2);
+            expect(mockPlaybackEngine).toHaveBeenCalledWith(sparseBeats[0]);
+            expect(mockPlaybackEngine).toHaveBeenCalledWith(sparseBeats[2]);
+        });
+
+        it('handles cases where the previous beat is missing in the array', () => {
+            // We simulate a session where the item before our startIndex is missing
+            const brokenBeats = [
+                undefined, 
+                { type: "BEAT", key: "A", timestamp: 1000 },
+                { type: "BEAT", key: "B", timestamp: 2000 },
+            ] as unknown as (Beat | Pause)[];
+
+            const brokenSession: Session = { beats: brokenBeats };
+            const brokenPlayer = new Player(brokenSession, mockPlaybackEngine);
+
+            // Start from index 2 (Beat B). 
+            // The logic will try to look at index 1 (Beat A) as 'previous'.
+            // If we started at index 1, it would try to look at index 0 (undefined).
+            brokenPlayer.playTimeline(); 
+
+            vi.advanceTimersByTime(2000);
+            expect(mockPlaybackEngine).toHaveBeenCalled();
+        });
+    })
 });
