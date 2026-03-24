@@ -1,32 +1,4 @@
-interface Beat {
-  key: string;
-  timestamp: number;
-}
-
-interface Recording {
-  beats: Beat[];
-}
-
-type Action =
-  | { type: "START_RECORDING"; timestamp: number }
-  | { type: "STOP_RECORDING" }
-  | { type: "PAUSE_RECORDING"; timestamp: number }
-  | { type: "CONTINUE_RECORDING"; timestamp: number }
-  | { type: "START_PLAYBACK" }
-  | { type: "STOP_PLAYBACK" }
-  | { type: "PAUSE_PLAYBACK" }
-  | { type: "CONTINUE_PLAYBACK" }
-  | { type: "BEAT"; data: Beat[] };
-
-interface ApplicationState {
-  mode:
-    | "NORMAL"
-    | "RECORDING_PROGRESS"
-    | "RECORDING_PAUSED"
-    | "PLAYBACK_PROGRESS"
-    | "PLAYBACK_PAUSED";
-  recordings: Recording;
-}
+import { ApplicationState, Action, Session, Pause, Beat } from "./types";
 
 const reducer = (state: ApplicationState, action: Action) => {
   let newState: ApplicationState = state;
@@ -66,10 +38,10 @@ const reducer = (state: ApplicationState, action: Action) => {
     }
     case "BEAT": {
       if(newState.mode === "RECORDING_PROGRESS") newState = {
-        ...state, recordings: {
-          ...state.recordings, beats: [
-            ...state.recordings.beats, 
-            ...action.data
+        ...state, sessions: {
+          ...state.sessions, beats: [
+            ...state.sessions.beats, 
+            action.data
           ]
         }
       }
@@ -79,4 +51,4 @@ const reducer = (state: ApplicationState, action: Action) => {
   return newState;
 }
 
-export { reducer, type ApplicationState }
+export { reducer, type ApplicationState, type Pause, type Beat, type Session }

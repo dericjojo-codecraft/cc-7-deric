@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { reducer, type ApplicationState } from "./script";
+import { type Beat, type ApplicationState } from "./types.ts";
+import { reducer } from './reducer.ts';
 
 describe("Vitest for reducer", () => {
   const initialState: ApplicationState = {
     mode: "NORMAL",
-    recordings: {
+    sessions: {
       beats: [],
     },
   };
@@ -33,9 +34,9 @@ describe("Vitest for reducer", () => {
       expect(next.mode).toBe("RECORDING_PAUSED");
     });
 
-    it("does not mutate recordings", () => {
+    it("does not mutate sessions", () => {
       const next = reducer(initialState, { type: "START_RECORDING", timestamp: 100 });
-      expect(next.recordings).toEqual(initialState.recordings);
+      expect(next.sessions).toEqual(initialState.sessions);
     });
   });
 
@@ -63,18 +64,19 @@ describe("Vitest for reducer", () => {
   describe("PAUSE_RECORDING", () => {
     it("transitions RECORDING_PROGRESS → RECORDING_PAUSED", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const next = reducer(state, { type: "PAUSE_RECORDING", timestamp: 200 });
+
+      const next = reducer(state, { type: "PAUSE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("RECORDING_PAUSED");
     });
 
     it("is a no-op when NORMAL", () => {
-      const next = reducer(initialState, { type: "PAUSE_RECORDING", timestamp: 200 });
+      const next = reducer(initialState, { type: "PAUSE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("NORMAL");
     });
 
     it("is a no-op when already RECORDING_PAUSED", () => {
       const state = stateIn("RECORDING_PAUSED");
-      const next = reducer(state, { type: "PAUSE_RECORDING", timestamp: 200 });
+      const next = reducer(state, { type: "PAUSE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("RECORDING_PAUSED");
     });
   });
@@ -83,18 +85,18 @@ describe("Vitest for reducer", () => {
   describe("CONTINUE_RECORDING", () => {
     it("transitions RECORDING_PAUSED → RECORDING_PROGRESS", () => {
       const state = stateIn("RECORDING_PAUSED");
-      const next = reducer(state, { type: "CONTINUE_RECORDING", timestamp: 300 });
+      const next = reducer(state, { type: "CONTINUE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("RECORDING_PROGRESS");
     });
 
     it("is a no-op when NORMAL", () => {
-      const next = reducer(initialState, { type: "CONTINUE_RECORDING", timestamp: 300 });
+      const next = reducer(initialState, { type: "CONTINUE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("NORMAL");
     });
 
     it("is a no-op when RECORDING_PROGRESS", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const next = reducer(state, { type: "CONTINUE_RECORDING", timestamp: 300 });
+      const next = reducer(state, { type: "CONTINUE_RECORDING", pause: {type: "PAUSE_START", timestamp: 200}});
       expect(next.mode).toBe("RECORDING_PROGRESS");
     });
   });
@@ -181,55 +183,49 @@ describe("Vitest for reducer", () => {
 
   // ── BEAT ──────────────────────────────────────────────────────────────────
   describe("BEAT", () => {
-    const beat1 = { key: "A", timestamp: 100 };
-    const beat2 = { key: "B", timestamp: 200 };
+    const beat1:Beat = { type: "BEAT", key: "A", timestamp: 100 };
+    const beat2:Beat = { type: "BEAT", key: "B", timestamp: 200 };
 
     it("appends beats when RECORDING_PROGRESS", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const next = reducer(state, { type: "BEAT", data: [beat1] });
-      expect(next.recordings.beats).toEqual([beat1]);
-    });
-
-    it("appends multiple beats at once", () => {
-      const state = stateIn("RECORDING_PROGRESS");
-      const next = reducer(state, { type: "BEAT", data: [beat1, beat2] });
-      expect(next.recordings.beats).toEqual([beat1, beat2]);
+      const next = reducer(state, { type: "BEAT", data: beat1 });
+      expect(next.sessions.beats).toEqual([beat1]);
     });
 
     it("accumulates beats across multiple BEAT actions", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const after1 = reducer(state, { type: "BEAT", data: [beat1] });
-      const after2 = reducer(after1, { type: "BEAT", data: [beat2] });
-      expect(after2.recordings.beats).toEqual([beat1, beat2]);
+      const after1 = reducer(state, { type: "BEAT", data: beat1 });
+      const after2 = reducer(after1, { type: "BEAT", data: beat2 });
+      expect(after2.sessions.beats).toEqual([beat1, beat2]);
     });
 
     it("does not append beats when NORMAL", () => {
-      const next = reducer(initialState, { type: "BEAT", data: [beat1] });
-      expect(next.recordings.beats).toEqual([]);
+      const next = reducer(initialState, { type: "BEAT", data: beat1 });
+      expect(next.sessions.beats).toEqual([]);
     });
 
     it("does not append beats when RECORDING_PAUSED", () => {
       const state = stateIn("RECORDING_PAUSED");
-      const next = reducer(state, { type: "BEAT", data: [beat1] });
-      expect(next.recordings.beats).toEqual([]);
+      const next = reducer(state, { type: "BEAT", data: beat1 });
+      expect(next.sessions.beats).toEqual([]);
     });
 
     it("does not append beats when PLAYBACK_PROGRESS", () => {
       const state = stateIn("PLAYBACK_PROGRESS");
-      const next = reducer(state, { type: "BEAT", data: [beat1] });
-      expect(next.recordings.beats).toEqual([]);
+      const next = reducer(state, { type: "BEAT", data: beat1 });
+      expect(next.sessions.beats).toEqual([]);
     });
 
     it("does not mutate the previous state's beats array", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const before = state.recordings.beats;
-      reducer(state, { type: "BEAT", data: [beat1] });
+      const before = state.sessions.beats;
+      reducer(state, { type: "BEAT", data: beat1 });
       expect(before).toEqual([]);
     });
 
     it("preserves mode when appending beats", () => {
       const state = stateIn("RECORDING_PROGRESS");
-      const next = reducer(state, { type: "BEAT", data: [beat1] });
+      const next = reducer(state, { type: "BEAT", data: beat1 });
       expect(next.mode).toBe("RECORDING_PROGRESS");
     });
   });
