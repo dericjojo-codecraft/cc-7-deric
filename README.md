@@ -284,16 +284,13 @@ node assignment-3/users.ts
 
 ```bash
 # Watch mode (default)
-npm test
+npx vitest
 
 # Single run with coverage
-npm run test:coverage
-
-# Lint only
-npm run lint
+npm vitest --coverage
 ```
 
-Tests are written with **Vitest** and cover all major modules including LinkedList, Stack, the expression evaluator, async file utilities, employee/quotes data transforms, and the fetch mock. The CI pipeline (GitHub Actions on Node 20) runs lint + tests on every push and PR to `main`.
+Tests are written with **Vitest** and cover all major modules including LinkedList, Stack, the expression evaluator, async file utilities, employee/quotes data transforms, fetch mock and the drumkit simulator. The CI pipeline (GitHub Actions on Node 20) runs lint + tests on every push and PR to `main`.
 
 ---
 
