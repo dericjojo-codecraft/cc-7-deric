@@ -9,8 +9,14 @@ export default tseslint.config(
         ignores: ["dist/", "node_modules/"]
     },
     {
-      globals: {
-        ...globals.browser,
-      },
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+            },
+        },
+    },
+    {
+        ignores: ["dist/", "node_modules/", "coverage/"]
     },
 );

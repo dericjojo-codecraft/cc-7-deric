@@ -1,5 +1,3 @@
-/* global window, document, setTimeout, Audio */
-
 import { Player } from './player.js';
 import { reducer } from './reducer.js';
 
