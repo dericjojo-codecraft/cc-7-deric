@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 import { Player } from './player.js';
 import { reducer } from './reducer.js';
 

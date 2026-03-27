@@ -34,8 +34,7 @@ class Player {
             }
             else {
                 const previous = session.beats[i - 1];
-                if (!previous) { }
-                else {
+                if (previous) {
                     // 1. calculate the gap from the previous beat
                     const gap = current.timestamp - previous.timestamp;
                     // 2. if the PREVIOUS item was a PAUSE_START, and THIS is a PAUSE_STOP,

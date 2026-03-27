@@ -53,7 +53,7 @@ class Player {
                 currentDelay = i === 0 ? current.timestamp : 0;
             } else {
                 const previous = session.beats[i - 1];
-                if (!previous) {} else {
+                if (previous) {
                     // 1. calculate the gap from the previous beat
                     const gap = current.timestamp - previous.timestamp;
 
