@@ -1,3 +1,5 @@
+/* global setTimeout, clearTimeout, console */
+
 class Player {
     session;
     engine;
