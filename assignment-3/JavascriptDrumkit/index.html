@@ -8,102 +8,98 @@
 </head>
 
 <body>
+  <div id="controls">
+    <div class="control-board" id="playback-control">
+      <p>PLAYBACK CONTROL</p>
+      <div class="control-btns">
+        <div class="control-btn" id="stop-playback">
+          <kbd>Q</kbd>
+          <span class="sound">Stop</span>
+        </div>
+        <div class="control-btn" id="start-playback">
+          <kbd>W</kbd>
+          <span class="sound">Start</span>
+        </div>
+        <div class="control-btn" id="pause-playback">
+          <kbd>E</kbd>
+          <span class="sound">Pause/Resume</span>
+        </div>
+      </div>
+    </div>
 
+    <h1 id="state-str">STUDIO STATE: FREEPLAY</h1>
 
-  <div class="keys">
-    <div data-key="65" class="key">
-      <kbd>A</kbd>
-      <span class="sound">clap</span>
-    </div>
-    <div data-key="83" class="key">
-      <kbd>S</kbd>
-      <span class="sound">hihat</span>
-    </div>
-    <div data-key="68" class="key">
-      <kbd>D</kbd>
-      <span class="sound">kick</span>
-    </div>
-    <div data-key="70" class="key">
-      <kbd>F</kbd>
-      <span class="sound">openhat</span>
-    </div>
-    <div data-key="71" class="key">
-      <kbd>G</kbd>
-      <span class="sound">boom</span>
-    </div>
-    <div data-key="72" class="key">
-      <kbd>H</kbd>
-      <span class="sound">ride</span>
-    </div>
-    <div data-key="74" class="key">
-      <kbd>J</kbd>
-      <span class="sound">snare</span>
-    </div>
-    <div data-key="75" class="key">
-      <kbd>K</kbd>
-      <span class="sound">tom</span>
-    </div>
-    <div data-key="76" class="key">
-      <kbd>L</kbd>
-      <span class="sound">tink</span>
+    <div class="control-board" id="record-control">
+      <p>RECORDING CONTROL</p>
+      <div class="control-btns">
+        <div class="control-btn" id="reset-recording">
+          <kbd>U</kbd>
+          <span class="sound">Reset</span>
+        </div>
+        <div class="control-btn" id="stop-recording">
+          <kbd>I</kbd>
+          <span class="sound">Stop</span>
+        </div>
+        <div class="control-btn" id="resume-recording">
+          <kbd>O</kbd>
+          <span class="sound">Start</span>
+        </div>
+        <div class="control-btn" id="pause-recording">
+          <kbd>P</kbd>
+          <span class="sound">Pause/Resume</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <audio data-key="65" src="sounds/clap.wav"></audio>
-  <audio data-key="83" src="sounds/hihat.wav"></audio>
-  <audio data-key="68" src="sounds/kick.wav"></audio>
-  <audio data-key="70" src="sounds/openhat.wav"></audio>
-  <audio data-key="71" src="sounds/boom.wav"></audio>
-  <audio data-key="72" src="sounds/ride.wav"></audio>
-  <audio data-key="74" src="sounds/snare.wav"></audio>
-  <audio data-key="75" src="sounds/tom.wav"></audio>
-  <audio data-key="76" src="sounds/tink.wav"></audio>
+  <div id="beats-selected">
+    <ul id="beats-list"></ul>
+  </div>
 
-  <script>
-    /** GOAL: When a user opens this page and presses a key that corresponds with
-      * one of our div elements, we should play the audio clip associated with
-      * the keypress, add a class to the specific element that matches with the keypress,
-      * and then remove that class in order to reset the element to it's original state.
-      */
+  <div id="big-content">
+    <div id="progress-bar"></div>
+    <h2 id="beat-counter"></h2>
+    <div class="keys">
+      <div data-key="65" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+      </div>
+      <div data-key="83" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+      </div>
+      <div data-key="68" class="key">
+        <kbd>D</kbd>
+        <span class="sound">kick</span>
+      </div>
+      <div data-key="70" class="key">
+        <kbd>F</kbd>
+        <span class="sound">openhat</span>
+      </div>
+      <div data-key="71" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+      </div>
+      <div data-key="72" class="key">
+        <kbd>H</kbd>
+        <span class="sound">ride</span>
+      </div>
+      <div data-key="74" class="key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+      </div>
+      <div data-key="75" class="key">
+        <kbd>K</kbd>
+        <span class="sound">tom</span>
+      </div>
+      <div data-key="76" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+      </div>
+    </div>
+  </div>
 
-    (()=> {
-      const playSound = (e) => {
-        const soundclip = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-        const keyelement = document.querySelector(`.key[data-key="${e.keyCode}"]`);
-
-        if (!soundclip) return undefined; // Stop function from running if key pressed doesn't match up with our elements
-
-        keyelement.classList.add('playing');
-
-        // Ensures that the sound clip always plays from the beginning. Otherwise,
-        // if the 'a' key is pressed twice rapidly, the soundclip will only play through
-        // once.
-        soundclip.currentTime = 0;
-
-        soundclip.play(); // Play sound
-      }
-
-      const removeTransition = (e) => {
-        // skip if it's not a transform event
-        if (e.propertyName !== 'transform') return undefined;
-        e.target.classList.remove('playing');
-      }
-
-      // Find all elements in the document with a class 'key'
-      const keys = document.querySelectorAll('.key');
-
-      // Listen for any `keydown` events that occur on this browser window instance (this page)
-      // When a `keydown` event is observered, trigger the `playSound` function, passing in the
-      // `keydown` event as the argument (e)
-      window.addEventListener('keydown', playSound);
-
-      keys.forEach(key =>
-        key.addEventListener(
-          'transitionend',
-          (e) => removeTransition.call(key, e)
-        ));
-    })();
-  </script>
+  <script type="module" src="./script.js"></script>
 
 </body>
 

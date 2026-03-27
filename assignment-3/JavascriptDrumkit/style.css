@@ -1,50 +1,345 @@
-html {
-  font-size: 10px;
-  background:url(http://i.imgur.com/b9r5sEL.jpg) bottom center;
-  background-size: cover;
-}
-body,html {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-raised: #1a1a1a;
+  --border: #2a2a2a;
+  --accent: #e8ff00;
+  --accent-glow: rgba(232, 255, 0, 0.25);
+  --accent-dim: rgba(232, 255, 0, 0.08);
+  --text-primary: #f0f0f0;
+  --text-muted: #555;
+  --danger: #ff3b3b;
 }
 
-.keys {
-  display:flex;
-  flex:1;
-  min-height:100vh;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 10px;
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Space Mono', monospace;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,255,0,0.07) 0%, transparent 60%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255,255,255,0.015) 39px,
+      rgba(255,255,255,0.015) 40px
+    ),
+    var(--bg);
+}
+
+/* ── Header ──────────────────────────────────────── */
+body::before {
+  content: 'DRUM KIT';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 8rem;
+  letter-spacing: 0.2em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232,255,0,0.15);
+  position: fixed;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* ── Keys grid ───────────────────────────────────── */
+.keys {
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 8rem 4rem 4rem;
+  width: fit-content;
 }
 
 .key {
-  border:4px solid black;
-  border-radius:5px;
-  margin:1rem;
-  font-size: 1.5rem;
-  padding:1rem .5rem;
-  transition:all .07s;
-  width:100px;
+  position: relative;
+  width: 100px;
+  padding: 2rem 1rem 1.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
   text-align: center;
-  color:white;
-  background:rgba(0,0,0,0.4);
-  text-shadow:0 0 5px black;
+  cursor: pointer;
+  transition: transform 0.06s ease, border-color 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+  overflow: hidden;
+}
+
+/* subtle top edge highlight */
+.key::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+/* corner accent mark */
+.key::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid var(--text-muted);
+  border-right: 1px solid var(--text-muted);
+  transition: border-color 0.06s ease;
+}
+
+.key:hover {
+  border-color: #404040;
+  background: var(--surface-raised);
+}
+
+.key:hover::after {
+  border-color: var(--accent);
 }
 
 .playing {
-  transform:scale(1.1);
-  border-color:#ffc600;
-  box-shadow: 0 0 10px #ffc600;
+  transform: scale(1.08) translateY(-2px);
+  border-color: var(--accent) !important;
+  background: var(--accent-dim) !important;
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 20px var(--accent-glow),
+    0 8px 32px rgba(0,0,0,0.6);
+}
+
+.playing::after {
+  border-color: var(--accent) !important;
 }
 
 kbd {
   display: block;
-  font-size: 40px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.8rem;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.8rem;
+  transition: color 0.06s ease;
+}
+
+.playing kbd {
+  color: var(--accent);
 }
 
 .sound {
-  font-size: 1.2rem;
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color:#ffc600;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  transition: color 0.06s ease;
+}
+
+.playing .sound {
+  color: var(--accent);
+}
+
+/* ── Beats log ───────────────────────────────────── */
+#beats-selected {
+  width: 100%;
+  max-width: 860px;
+  padding: 0 4rem 2rem;
+}
+
+#beats-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+#beats-list li {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  background: var(--accent-dim);
+  border: 1px solid rgba(232,255,0,0.2);
+  border-radius: 2px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  animation: pop-in 0.12s ease;
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+#start-btn,
+#reset-btn {
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  padding: 1.2rem 3rem;
+  margin: 0.6rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+#reset-btn {
+  background: var(--surface);
+}
+
+#reset-btn:hover {
+  border-color: var(--danger);
+  background: rgba(255, 59, 59, 0.07);
+}
+
+#reset-btn h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+#reset-btn:hover h2 {
+  color: var(--danger);
+}
+
+#controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+}
+
+.control-board {
+  display: flex;
+  flex-direction: column;
+
+  font-size: 2rem;
+  margin: 20px;
+
+  padding: 2rem 1rem 1.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.control-btns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 20px;
+  font-size: 4rem;
+  margin: 20px;
+}
+
+.control-btn {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  padding: 2rem 1rem 1.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-align: center;
+  transition: transform 0.06s ease, border-color 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+  overflow: hidden;
+}
+
+.control-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+/* corner accent mark */
+.control-btn::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid var(--text-muted);
+  border-right: 1px solid var(--text-muted);
+  transition: border-color 0.06s ease;
+}
+
+.control-btn:hover {
+  border-color: #404040;
+  background: var(--surface-raised);
+}
+
+.control-btn:hover::after {
+  border-color: var(--accent);
+}
+
+#progress-bar {
+  width: 1000px;
+  height: 12px;
+  display: flex; /* Allows segments to sit side-by-side */
+  gap: 4px;      /* Creates the visual 'segment' separation */
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.05); /* Very subtle background track */
+  border-radius: 4px;
+}
+
+.bar-segment {
+  flex: 1;
+  height: 100%;
+  background-color: var(--accent);
+  border-radius: 2px;
+  animation: ease-out;
+}
+
+.bar-segment.active {
+  background-color: #9c8b00; /* A darker shade of the accent yellow */
+  filter: brightness(0.6);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+  transform: scaleY(1.2);
+}
+
+#big-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.control-btn {
+  background: var(--surface);
+}
+
+.control-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
 }
