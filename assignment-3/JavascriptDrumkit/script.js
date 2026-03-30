@@ -4,13 +4,13 @@ import { reducer } from './reducer.js';
 const beatKeyArr = [65, 83, 68, 70, 71, 72, 74, 75, 76];
 
 const KEY_MAP = {
-    81: 'RESTART_PLAYBACK', // Q
-    87: 'START_PLAYBACK',   // W
-    69: 'TOGGLE_PLAYBACK',  // E
-    85: 'RESET_SESSION',    // U
-    73: 'STOP_RECORDING',   // I
-    79: 'START_RECORDING',  // O
-    80: 'TOGGLE_RECORDING'  // P
+    81: 'RESTART_PLAYBACK',
+    87: 'START_PLAYBACK',
+    69: 'TOGGLE_PLAYBACK',
+    85: 'RESET_SESSION',
+    73: 'STOP_RECORDING',
+    79: 'START_RECORDING',
+    80: 'TOGGLE_RECORDING'
 };
 
 let activePlayer = null;
@@ -50,40 +50,53 @@ function updateButtonVisuals() {
         resetRecord: document.getElementById('reset-recording')
     };
 
-    // Check if the session contains at least one playable beat
     const hasBeats = state.sessions.beats.some(beat => beat.type === "BEAT");
 
-    // Reset all to enabled first
-    Object.values(allBtns).forEach(btn => btn.classList.remove('disabled'));
+    Object.values(allBtns).forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('disabled');
+    });
 
-    // Dimming logic based on Mode and Content
     switch (state.mode) {
         case "FREEPLAY":
-            // Disable playback if there's nothing to play
             if (!hasBeats) {
+                allBtns.startPlayback.disabled = true;
                 allBtns.startPlayback.classList.add('disabled');
             }
+            allBtns.stopPlayback.disabled = true;
             allBtns.stopPlayback.classList.add('disabled');
+            allBtns.pausePlayback.disabled = true;
             allBtns.pausePlayback.classList.add('disabled');
             
+            allBtns.stopRecord.disabled = true;
             allBtns.stopRecord.classList.add('disabled');
+            allBtns.pauseRecord.disabled = true;
             allBtns.pauseRecord.classList.add('disabled');
             break;
 
         case "PLAYBACK_PROGRESS":
         case "PLAYBACK_PAUSED":
+            allBtns.startPlayback.disabled = true;
             allBtns.startPlayback.classList.add('disabled');
+            allBtns.startRecord.disabled = true;
             allBtns.startRecord.classList.add('disabled');
+            allBtns.stopRecord.disabled = true;
             allBtns.stopRecord.classList.add('disabled');
+            allBtns.pauseRecord.disabled = true;
             allBtns.pauseRecord.classList.add('disabled');
+            allBtns.resetRecord.disabled = true;
             allBtns.resetRecord.classList.add('disabled');
             break;
 
         case "RECORDING_PROGRESS":
         case "RECORDING_PAUSED":
+            allBtns.startRecord.disabled = true;
             allBtns.startRecord.classList.add('disabled');
+            allBtns.startPlayback.disabled = true;
             allBtns.startPlayback.classList.add('disabled');
+            allBtns.stopPlayback.disabled = true;
             allBtns.stopPlayback.classList.add('disabled');
+            allBtns.pausePlayback.disabled = true;
             allBtns.pausePlayback.classList.add('disabled');
             break;
     }
@@ -91,7 +104,7 @@ function updateButtonVisuals() {
 
 function handleControl(actionName) {
     const targetBtn = document.querySelector(`[data-action="${actionName}"]`);
-    if (targetBtn && targetBtn.classList.contains('disabled')) return;
+    if (targetBtn && targetBtn.disabled) return;
 
     switch (actionName) {
         case 'RESTART_PLAYBACK':
@@ -103,9 +116,7 @@ function handleControl(actionName) {
             }
             break;
         case 'START_PLAYBACK':
-            if (state.mode === "PLAYBACK_PROGRESS" || state.mode === "PLAYBACK_PAUSED") {
-                return; 
-            }
+            if (state.mode === "PLAYBACK_PROGRESS" || state.mode === "PLAYBACK_PAUSED") return; 
             handlePlayback();
             pauseKbd.textContent = "Pause";
             break;
@@ -166,13 +177,11 @@ function handleControl(actionName) {
 
 window.addEventListener('keydown', (event) => {
     const keyCode = event.keyCode;
-
     if (beatKeyArr.includes(keyCode) && !event.ctrlKey) {
         const keyElement = document.querySelector(`.key[data-key="${keyCode}"]`);
         if (keyElement) playKey(keyElement);
         return;
     }
-
     const isControlKey = event.ctrlKey || event.metaKey;
     if (isControlKey && KEY_MAP[keyCode]) {
         event.preventDefault();
@@ -189,26 +198,20 @@ controlBtns.forEach(btn => {
 
 function playKey(element) {
     const soundName = element.querySelector('kbd').textContent;
-
     playAudio(soundName);
-
     element.classList.add('playing');
     setTimeout(() => element.classList.remove('playing'), 70);
-
     if (state.mode === "RECORDING_PROGRESS") {
         if (startTime === null) startTime = Date.now();
         const relative_time = Date.now() - startTime;
-    
         state.sessions.beats.push({
             type: "BEAT",
             key: soundName,
             timestamp: relative_time
         });
-        
         const li = document.createElement('li');
         li.textContent = `${soundName}`;
         beatsListUl.appendChild(li);
-
         const segment = document.createElement('div');
         segment.className = 'bar-segment';
         progressBar.appendChild(segment);
@@ -230,19 +233,13 @@ function handlePlayback() {
     if (state.sessions.beats.length > 0) {
         activePlayer = new Player(state.sessions, playback);
         dispatch({ type: "START_PLAYBACK" });
-
-        // subscription to control the current beat colour
         activePlayer.subscribe((currentIndex, total) => {
             const segments = progressBar.querySelectorAll(".bar-segment");
-            
             segments.forEach(s => s.classList.remove('active'));
-
             if (currentIndex > 0 && segments[currentIndex - 1]) {
                 segments[currentIndex - 1].classList.add('active');
             }
-            
             beatCounter.textContent = `Beat Count: ${currentIndex} / ${total}`
-
             if (currentIndex === total && total > 0) {
                 setTimeout(() => {
                     dispatch({ type: "STOP_PLAYBACK" });
@@ -262,4 +259,3 @@ keys.forEach(key => {
 });
 
 updateButtonVisuals();
-window.onload(()=>{alert("Enable fullscreen for intended experience")});

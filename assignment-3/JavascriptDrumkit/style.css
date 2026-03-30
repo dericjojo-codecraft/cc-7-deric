@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
 
-/* Base Styles & Variables */
 :root {
   --bg: #0a0a0a;
   --surface: #111111;
@@ -61,7 +60,6 @@ body::before {
   white-space: nowrap;
 }
 
-/* Drum Keys */
 .keys {
   display: flex;
   flex-wrap: wrap;
@@ -73,6 +71,7 @@ body::before {
 }
 
 .key {
+  appearance: none;
   position: relative;
   min-width: 10rem;
   width: fit-content;
@@ -84,6 +83,7 @@ body::before {
   cursor: pointer;
   transition: transform 0.06s ease, border-color 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
   overflow: hidden;
+  font-family: inherit;
 }
 
 .key::before {
@@ -159,7 +159,6 @@ body::before {
   color: var(--accent);
 }
 
-/* Control Panels & Light Buttons */
 #controls {
   display: flex;
   flex-direction: row;
@@ -187,6 +186,7 @@ body::before {
 }
 
 .control-btn {
+  appearance: none;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -200,8 +200,10 @@ body::before {
   transition: transform 0.06s ease, border-color 0.06s ease, background 0.06s ease;
   position: relative;
   overflow: hidden;
-  user-select: none; /* Prevents text selection on rapid clicks */
+  user-select: none;
+  font-family: inherit;
 }
+
 .control-btn:active {
   transform: scale(0.95);
   background: #f0f0f0;
@@ -215,12 +217,12 @@ body::before {
 .control-btn kbd {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2.4rem;
-  color: #1a1a1a; /* Dark text for light button */
+  color: #1a1a1a;
   margin-bottom: 0.5rem;
 }
 
 .control-btn .sound {
-  color: #777; /* Gray text for sound label */
+  color: #777;
   font-size: 0.9rem;
 }
 
@@ -243,16 +245,15 @@ body::before {
   border-right: 1px solid #999;
 }
 
-.control-btn:hover {
+.control-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: #ffffff;
 }
 
-.control-btn:hover::after {
+.control-btn:hover:not(:disabled)::after {
   border-color: var(--accent);
 }
 
-/* Visualization & Progress */
 #progress-bar {
   width: 1000px;
   height: 12px;
@@ -291,7 +292,6 @@ body::before {
   align-items: center;
 }
 
-/* Session List */
 #beats-selected {
   width: 100%;
   max-width: 860px;
@@ -314,15 +314,17 @@ body::before {
   color: var(--accent);
 }
 
-.control-btn.disabled {
+.control-btn.disabled, .control-btn:disabled {
   opacity: 0.3;
   filter: grayscale(0.8);
-  pointer-events: none;      /* Physically prevents clicks */
+  pointer-events: none;
   cursor: not-allowed;
-  transform: none !important; /* Disables hover scaling */
+  transform: none !important;
 }
 
 .control-btn.disabled kbd,
-.control-btn.disabled .sound {
+.control-btn.disabled .sound,
+.control-btn:disabled kbd,
+.control-btn:disabled .sound {
   color: #aaa !important;
 }
