@@ -10,19 +10,19 @@
 <body>
   <div id="controls">
     <div class="control-board" id="playback-control">
-      <p>PLAYBACK CONTROL</p>
+      <h2>PLAYBACK</h2>
       <div class="control-btns">
-        <div class="control-btn" id="stop-playback">
-          <kbd>Q</kbd>
-          <span class="sound">Stop</span>
+        <div class="control-btn" id="stop-playback" data-action="RESTART_PLAYBACK">
+          <kbd>Stop</kbd>
+          <span class="sound">ctrl + Q</span>
         </div>
-        <div class="control-btn" id="start-playback">
-          <kbd>W</kbd>
-          <span class="sound">Start</span>
+        <div class="control-btn" id="start-playback" data-action="START_PLAYBACK">
+          <kbd>Start</kbd>
+          <span class="sound">ctrl + W</span>
         </div>
-        <div class="control-btn" id="pause-playback">
-          <kbd>E</kbd>
-          <span class="sound">Pause/Resume</span>
+        <div class="control-btn" id="pause-playback" data-action="TOGGLE_PLAYBACK">
+          <kbd>Pause</kbd>
+          <span class="sound">ctrl + E</span>
         </div>
       </div>
     </div>
@@ -30,23 +30,23 @@
     <h1 id="state-str">STUDIO STATE: FREEPLAY</h1>
 
     <div class="control-board" id="record-control">
-      <p>RECORDING CONTROL</p>
+      <h2>RECORD</h2>
       <div class="control-btns">
-        <div class="control-btn" id="reset-recording">
-          <kbd>U</kbd>
-          <span class="sound">Reset</span>
+        <div class="control-btn" id="reset-recording" data-action="RESET_SESSION">
+          <kbd>Reset</kbd>
+          <span class="sound">ctrl + U</span>
         </div>
-        <div class="control-btn" id="stop-recording">
-          <kbd>I</kbd>
-          <span class="sound">Stop</span>
+        <div class="control-btn" id="stop-recording" data-action="STOP_RECORDING">
+          <kbd>Stop</kbd>
+          <span class="sound">ctrl + I</span>
         </div>
-        <div class="control-btn" id="resume-recording">
-          <kbd>O</kbd>
-          <span class="sound">Start</span>
+        <div class="control-btn" id="resume-recording" data-action="START_RECORDING">
+          <kbd>Start</kbd>
+          <span class="sound">ctrl + O</span>
         </div>
-        <div class="control-btn" id="pause-recording">
-          <kbd>P</kbd>
-          <span class="sound">Pause/Resume</span>
+        <div class="control-btn" id="pause-recording" data-action="TOGGLE_RECORDING">
+          <kbd>Pause</kbd>
+          <span class="sound">ctrl + P</span>
         </div>
       </div>
     </div>
@@ -61,40 +61,40 @@
     <h2 id="beat-counter"></h2>
     <div class="keys">
       <div data-key="65" class="key">
-        <kbd>A</kbd>
-        <span class="sound">clap</span>
+        <kbd>clap</kbd>
+        <span class="sound">A</span>
       </div>
       <div data-key="83" class="key">
-        <kbd>S</kbd>
-        <span class="sound">hihat</span>
+        <kbd>hihat</kbd>
+        <span class="sound">S</span>
       </div>
       <div data-key="68" class="key">
-        <kbd>D</kbd>
-        <span class="sound">kick</span>
+        <kbd>kick</kbd>
+        <span class="sound">D</span>
       </div>
       <div data-key="70" class="key">
-        <kbd>F</kbd>
-        <span class="sound">openhat</span>
+        <kbd>openhat</kbd>
+        <span class="sound">F</span>
       </div>
       <div data-key="71" class="key">
-        <kbd>G</kbd>
-        <span class="sound">boom</span>
+        <kbd>boom</kbd>
+        <span class="sound">G</span>
       </div>
       <div data-key="72" class="key">
-        <kbd>H</kbd>
-        <span class="sound">ride</span>
+        <kbd>ride</kbd>
+        <span class="sound">H</span>
       </div>
       <div data-key="74" class="key">
-        <kbd>J</kbd>
-        <span class="sound">snare</span>
+        <kbd>snare</kbd>
+        <span class="sound">J</span>
       </div>
       <div data-key="75" class="key">
-        <kbd>K</kbd>
-        <span class="sound">tom</span>
+        <kbd>tom</kbd>
+        <span class="sound">K</span>
       </div>
       <div data-key="76" class="key">
-        <kbd>L</kbd>
-        <span class="sound">tink</span>
+        <kbd>tink</kbd>
+        <span class="sound">L</span>
       </div>
     </div>
   </div>
