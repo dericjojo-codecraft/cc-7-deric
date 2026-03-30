@@ -1,4 +1,4 @@
-import { ApplicationState, Action, Session, Pause, Beat } from "./types";
+import { ApplicationState, Action, Session, Pause, Beat } from "./types.js";
 
 const reducer = (state: ApplicationState, action: Action) => {
   let newState: ApplicationState = state;

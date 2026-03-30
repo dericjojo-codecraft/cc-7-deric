@@ -1,4 +1,4 @@
-import { type Beat, type Session, type Pause } from './types.ts';
+import { type Beat, type Session, type Pause } from './types.js';
 
 type Listener = (
     beatIndex: number,
@@ -53,9 +53,7 @@ class Player {
                 currentDelay = i === 0 ? current.timestamp : 0;
             } else {
                 const previous = session.beats[i - 1];
-                if (!previous) {
-                    currentDelay += 0;
-                } else {
+                if (previous) {
                     // 1. calculate the gap from the previous beat
                     const gap = current.timestamp - previous.timestamp;
 
@@ -90,6 +88,11 @@ class Player {
      * the play function normalizes the session and notifies the listeners
      */
     playTimeline() {
+        if (!this.session || !this.session.beats) {
+            console.error("Cannot play: Session or beats array is missing.");
+            return;
+        }
+
         this.normalize(this.session, this.beatIndex);
         // 2. create timers from current beat index to final beat index
         /// call `playback` to play the beat

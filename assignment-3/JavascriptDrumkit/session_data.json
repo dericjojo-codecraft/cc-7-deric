@@ -1,0 +1,21 @@
+{
+    "beats": [
+            {"type": "BEAT", "key": "A", "timestamp": 1000},
+            {"type": "BEAT", "key": "S", "timestamp": 2000},
+
+            {"type": "PAUSE_START", "timestamp": 3000},
+            {"type": "PAUSE_STOP", "timestamp": 8000},
+            
+            {"type": "BEAT", "key": "D", "timestamp": 10000},
+            {"type": "BEAT", "key": "F", "timestamp": 11000},
+            {"type": "BEAT", "key": "G", "timestamp": 12000},
+            
+            {"type": "PAUSE_START", "timestamp": 13000},
+            {"type": "PAUSE_STOP", "timestamp": 18000},
+            
+            {"type": "BEAT", "key": "H", "timestamp": 20000},
+            {"type": "BEAT", "key": "J", "timestamp": 28000},
+            {"type": "BEAT", "key": "K", "timestamp": 20000},
+            {"type": "BEAT", "key": "L", "timestamp": 20000}
+    ]
+}
