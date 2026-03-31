@@ -6,7 +6,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)
 ![Vitest](https://img.shields.io/badge/tested%20with-vitest-6e9f18?logo=vitest)
 ![ESLint](https://img.shields.io/badge/linted%20with-eslint-4B32C3?logo=eslint)
-![Vercel](https://img.shields.io/badge/hosted%20on-vercel-4B32C3?logo=vercel)
+![Vercel](https://img.shields.io/badge/hosted%20on-vercel-FF3200?logo=vercel)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-green?logo=node.js)
 ![License](https://img.shields.io/badge/license-ISC-lightgrey)
 
