@@ -234,33 +234,45 @@ evaluateExpression("")                         // undefined — empty string
 
 ## 🥁 Javascript Drumkit
 
-A TypeScript drumkit application built around a **pure reducer** for state management and a **`Player` class** for timeline playback — including pause-aware scheduling.
+A vanilla JS + TypeScript drumkit with record, pause, and playback support. Beats are recorded in real time with timestamps, and a pause-aware `Player` replays them with identical timing — minus any pauses you took mid-recording.
+
+### How to use
+
+| Action | Keyboard | Button |
+|---|---|---|
+| Start recording | `Ctrl + O` | Start (Record panel) |
+| Pause recording | `Ctrl + P` | Pause (Record panel) |
+| Stop recording | `Ctrl + I` | Stop (Record panel) |
+| Reset session | `Ctrl + U` | Reset (Record panel) |
+| Start playback | `Ctrl + W` | Start (Playback panel) |
+| Pause / Resume playback | `Ctrl + E` | Pause (Playback panel) |
+| Stop playback | `Ctrl + Q` | Stop (Playback panel) |
+| Play a drum sound | `A S D F G H J K L` | Click the pad |
+
+The nine drum pads map to: **clap, hihat, kick, openhat, boom, ride, snare, tom, tink**.
 
 ### Core types (`types.ts`)
 
 ```ts
-// A recorded keypress
 interface Beat {
-  type: "BEAT";
-  key: string;
-  timestamp: number;
+  type: string;        // "BEAT"
+  key: string;         // drum pad name e.g. "clap"
+  timestamp: number;   // ms since recording started
 }
 
-// Bookend a recorded pause
 type Pause = {
   type: "PAUSE_START" | "PAUSE_STOP";
   timestamp: number;
 }
 
-// A full recording session
 interface Session {
-  beats: (Beat | Pause)[];
+  beats: (Beat | Pause)[];  // ordered mix of beats and pause markers
 }
 ```
 
 ### State machine — `reducer.ts`
 
-The app state is managed by a pure reducer with five modes:
+The app mode is managed by a pure reducer. The UI mode label shown on screen (`STUDIO STATE`) reflects the current mode directly.
 
 ```mermaid
 stateDiagram-v2
@@ -275,52 +287,88 @@ stateDiagram-v2
   PLAYBACK_PAUSED --> PLAYBACK_PROGRESS : CONTINUE_PLAYBACK
 ```
 
-The `BEAT` action only appends to the session when in `RECORDING_PROGRESS` — all other modes are no-ops, keeping recordings immutable and predictable.
+`BEAT` actions only append to the session when in `RECORDING_PROGRESS`. Every other mode ignores them, keeping the session array predictable and immutable.
 
-### Timeline playback — `player.ts`
+### Timeline playback — `player.ts` / `player.js`
 
-The `Player` class handles scheduling beats in real time, stripping out pause durations so playback sounds identical to the original performance.
+The `Player` class schedules all beats using `setTimeout`, subtracting accumulated pause durations so playback matches the original feel exactly.
 
 ```ts
 const player = new Player(session, (beat) => {
-  playSound(beat.key); // your audio engine
+  playAudio(beat.key); // fires the Web Audio API call
 });
 
-player.playTimeline();   // start / resume
-player.pauseTimeline();  // freeze, preserves beat index
-player.resetTimeline();  // return to beginning
+player.playTimeline();   // start or resume from beatIndex
+player.pauseTimeline();  // cancel all pending timers, freeze beatIndex
+player.resetTimeline();  // cancel timers, reset beatIndex to 0
 ```
 
-**How pause-stripping works:**
+**How `normalize()` strips pauses:**
 
-```mermaid
-flowchart LR
-  A["Beat A\nt=1000ms"] --> PS["PAUSE_START\nt=5000ms"]
-  PS --> PE["PAUSE_STOP\nt=10000ms"]
-  PE --> B["Beat B\nt=11000ms"]
+Given a session recorded like this:
 
-  A2["Beat A fires\nat 1000ms"] --> B2["Beat B fires\nat 6000ms\nnot 11000ms"]
+```
+Beat A  @ 1000ms
+PAUSE_START @ 5000ms
+PAUSE_STOP  @ 10000ms   ← 5000ms pause gap
+Beat B  @ 11000ms
 ```
 
-The `normalize()` method skips the `PAUSE_START → PAUSE_STOP` gap (5000ms here) when calculating `setTimeout` delays, so Beat B fires 1000ms after Beat A rather than 10000ms.
+`normalize()` tracks `accumulatedPauseTime` as it walks the array. By the time it schedules Beat B, it subtracts the 5000ms gap:
+
+```
+adjustedDelay = timestamp - firstTimestamp - accumulatedPauseTime
+             = 11000 - 1000 - 5000
+             = 5000ms        ← Beat B fires 5s after Beat A, not 10s
+```
+
+`PAUSE_START` and `PAUSE_STOP` entries are consumed for bookkeeping only — they never reach the playback engine.
 
 ### Observer pattern
 
-`Player` supports multiple listeners via `subscribe` / `unsubscribe` — useful for updating UI progress bars or beat indicators:
+`Player` exposes `subscribe` / `unsubscribe` for UI updates. `script.js` uses this to drive the progress bar and beat counter:
 
 ```ts
-player.subscribe((beatIndex, totalBeats) => {
-  updateProgressBar(beatIndex / totalBeats);
+player.subscribe((currentIndex, totalBeats) => {
+  // highlight the active segment in the progress bar
+  segments[currentIndex - 1].classList.add('active');
+  beatCounter.textContent = `Beat Count: ${currentIndex} / ${totalBeats}`;
+
+  // auto-stop when the last beat fires
+  if (currentIndex === totalBeats) {
+    dispatch({ type: "STOP_PLAYBACK" });
+  }
 });
+```
+
+### Session data format
+
+Sessions can be serialised to / loaded from JSON. Example (`session_data.json`):
+
+```json
+{
+  "beats": [
+    { "type": "BEAT", "key": "A", "timestamp": 1000 },
+    { "type": "PAUSE_START", "timestamp": 3000 },
+    { "type": "PAUSE_STOP",  "timestamp": 8000 },
+    { "type": "BEAT", "key": "D", "timestamp": 10000 }
+  ]
+}
 ```
 
 ### File overview
 
 | File | Role |
 |---|---|
-| `types.ts` | Shared interfaces — `Beat`, `Pause`, `Session`, `Action`, `ApplicationState` |
-| `reducer.ts` | Pure state machine — handles all mode transitions and beat recording |
-| `player.ts` | Timeline scheduler — normalises pause gaps, manages timers and observers |
+| `index.html` | UI — drum pads, record panel, playback panel, progress bar |
+| `style.css` | Dark studio theme with neon-yellow accent (`#e8ff00`) |
+| `types.ts` / `types.js` | Shared interfaces — `Beat`, `Pause`, `Session`, `Action`, `ApplicationState` |
+| `reducer.ts` / `reducer.js` | Pure state machine — mode transitions and beat recording |
+| `player.ts` / `player.js` | Timeline scheduler — pause normalisation, timers, observers |
+| `script.js` | DOM controller — wires keyboard/button events to reducer and player |
+| `session_data.json` | Example recorded session for testing playback |
+| `reducer.test.ts` | Full reducer test suite — all transitions and immutability checks |
+| `player.test.ts` | Player test suite — playback, pause/resume, multi-pause, observers |
 
 ---
 
@@ -375,9 +423,9 @@ npm install
 Run any assignment file directly:
 
 ```bash
-node assignment-1/initialProblems/oddOrEven.ts
-node assignment-2/employees.ts
-node assignment-3/users.ts
+npx ts-node assignment-1/initialProblems/oddOrEven.ts
+npx ts-node assignment-2/employees.ts
+npx ts-node assignment-3/users.ts
 ```
 
 ---
@@ -386,10 +434,13 @@ node assignment-3/users.ts
 
 ```bash
 # Watch mode (default)
-npx vitest
+npm test
 
 # Single run with coverage
-npx vitest --coverage
+npm run test:coverage
+
+# Lint only
+npm run lint
 ```
 
 Tests are written with **Vitest** and cover all major modules including LinkedList, Stack, the expression evaluator, async file utilities, employee/quotes data transforms, the fetch mock, the Drumkit reducer, and the `Player` timeline scheduler. The CI pipeline (GitHub Actions on Node 20) runs lint + tests on every push and PR to `main`.
