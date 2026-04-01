@@ -259,3 +259,23 @@ keys.forEach(key => {
 });
 
 updateButtonVisuals();
+//window.alert("Enable FULLSCREEN(F11) mode for intended experience");
+
+const keysContainer = document.querySelector('.keys'); 
+const createBtn = document.getElementById("create-btn");
+
+function createButton() {
+    const customPad = document.createElement("button");
+    customPad.classList.add("key");
+    customPad.setAttributes("data-key", "00");
+    customPad.innerHTML = `
+        <kbd>new</kbd>
+        <span class="sound">custom</span>
+    `
+    keys.appendChild(customPad);
+    customPad.addEventListener('click', (e) => {
+        if (state.mode === "RECORDING_PROGRESS") playKey(e.currentTarget);
+    });
+}
+
+createBtn.addEventListener('click', createButton);
