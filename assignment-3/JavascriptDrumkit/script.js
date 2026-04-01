@@ -261,7 +261,7 @@ keys.forEach(key => {
 updateButtonVisuals();
 //window.alert("Enable FULLSCREEN(F11) mode for intended experience");
 
-const keysContainer = document.querySelector('.keys'); 
+//const keysContainer = document.querySelector('.keys'); 
 const createBtn = document.getElementById("create-btn");
 
 function createButton() {
